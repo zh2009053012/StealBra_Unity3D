@@ -44,6 +44,7 @@ public class MapCellEditor : Editor {
 		if(Selection.activeGameObject != m_mapDisplay.gameObject)
 			return;
 		//
+
 		EditorGUILayout.BeginHorizontal();
 		IsToLeftUp.boolValue = EditorGUILayout.ToggleLeft (new GUIContent("LeftUp"), IsToLeftUp.boolValue, GUILayout.Width(80));
 		IsToUp.boolValue = EditorGUILayout.ToggleLeft (new GUIContent("Up"), IsToUp.boolValue, GUILayout.Width(80));
@@ -99,12 +100,11 @@ public class MapCellEditor : Editor {
 			IsToDown.boolValue = false;
 			IsToRightDown.boolValue = false;
 		}
-		if(IsObstacle.boolValue){
-			m_mapDisplay.Owner.SetObstacle(m_mapDisplay.Row, m_mapDisplay.Column);
-			m_mapDisplay.Owner.Recreate(Selection.activeGameObject);
-		}
 		EditorGUILayout.EndHorizontal ();
 
+		if(IsObstacle.boolValue){
+			m_mapDisplay.Owner.SetObstacle(m_mapDisplay.Row, m_mapDisplay.Column);
+		}
 		m_mapDisplay.ShowLeft ();
 		m_mapDisplay.ShowUp ();
 		m_mapDisplay.ShowRightUp ();
@@ -114,7 +114,7 @@ public class MapCellEditor : Editor {
 		m_mapDisplay.ShowDown ();
 		m_mapDisplay.ShowRightDown ();
 
-		if(null != generator && null != target)
-			generator.ApplyModifiedProperties ();
+
+		generator.ApplyModifiedProperties ();
 	}
 }

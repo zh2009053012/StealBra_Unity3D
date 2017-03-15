@@ -3,15 +3,15 @@ using System.Collections;
 using UnityEditor;
 
 /// <summary>
-/// 1\ sprite drawcall optimize
+/// 1\ sprite drawcall optimize  over
 /// 2\ SetObstacle  optimize
 /// </summary>
 
 [ExecuteInEditMode]
 public class MapDisplay : MonoBehaviour {
 
-	public uint m_row;
-	public uint m_column;
+	public int m_row;
+	public int m_column;
 	public MapCellDisplay[,] m_cellArray;
 	public string m_filePath;
 	private int m_mapRow, m_mapCol;
@@ -73,8 +73,9 @@ public class MapDisplay : MonoBehaviour {
 
 				go.transform.parent = transform;
 				go.transform.localScale = Vector3.one;
-				go.transform.localPosition = new Vector3 (size.x*j, -size.y*i, 0);
+				go.transform.localPosition = new Vector3 (size.x*j, size.y*i, 0);
 				go.name = i + "_" + j;
+				go.GetComponent<Renderer> ().sharedMaterial = CreateMat (go.name);
 
 				m_cellArray [j, i] = go.GetComponent<MapCellDisplay> ();
 				m_cellArray[j, i].Owner = this;
@@ -82,13 +83,41 @@ public class MapDisplay : MonoBehaviour {
 				m_cellArray[j, i].Column = j;
 			}
 		}
+		AssetDatabase.Refresh ();
+	}
+	//
+	Texture cell, line, mask1, mask2;
+	void LoadTexture(){
+		string path = "Assets/AStarDemo/Textures/cell/";
+		cell = AssetDatabase.LoadAssetAtPath (path+"cell.png", typeof(Texture))as Texture;
+		line = AssetDatabase.LoadAssetAtPath (path+"line_arrow.png", typeof(Texture))as Texture;
+		mask1 = AssetDatabase.LoadAssetAtPath (path+"mask_1.tga", typeof(Texture))as Texture;
+		mask2 = AssetDatabase.LoadAssetAtPath (path+"mask_2.tga", typeof(Texture))as Texture;
+	}
+	Material CreateMat(string name){
+		if (cell == null || line == null || mask1 == null || mask2 == null)
+			LoadTexture ();
+		string path = "Assets/AStarDemo/Materials/" + name + ".mat";
+		Material mat = AssetDatabase.LoadAssetAtPath<Material> (path);
+		if (mat == null) {
+			mat = new Material (Shader.Find ("Sprites/Cell"));
+			mat.mainTexture = cell;
+			mat.SetTexture ("_Mask1Tex", mask1);
+			mat.SetTexture ("_Mask2Tex", mask2);
+			mat.SetTexture ("_LineTex", line);
+			AssetDatabase.CreateAsset (mat, path);
+		}
+		mat.SetVector ("_Mask1", Vector4.one);
+		mat.SetVector ("_Mask2", Vector4.one);
+
+		return mat;
 	}
 
 	Map ToMap(){
 		Map map = new Map (m_row, m_column);
 		for (int i = 0; i < m_row; i++) {
 			for (int j = 0; j < m_column; j++) {
-				map.SetCell ((uint)i, (uint)j, m_cellArray [j, i].ToMapCell());
+				map.SetCell (i, j, m_cellArray [j, i].ToMapCell());
 			}
 		}
 		return map;
@@ -100,7 +129,7 @@ public class MapDisplay : MonoBehaviour {
 		CreateMap ();
 		for (int i = 0; i < m_row; i++) {
 			for (int j = 0; j < m_column; j++) {
-				m_cellArray [j, i].FromMapCell (map.GetCell ((uint)i, (uint)j));
+				m_cellArray [j, i].FromMapCell (map.GetCell (i, j));
 			}
 		}
 	}
