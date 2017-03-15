@@ -6,6 +6,7 @@ public class CharacterControl : MonoBehaviour {
 	private CharacterData m_data;
 	private bool m_jump=false;
 	private float horizontalInput;
+	private float verticalInput;
 	// Use this for initialization
 	void Start () {
 		m_data = GetComponent<CharacterData>();
@@ -19,6 +20,7 @@ public class CharacterControl : MonoBehaviour {
 			m_jump = true;
 		}
 		horizontalInput = Input.GetAxis("Horizontal");
+		verticalInput = Input.GetAxis("Vertical");
 	}
 	public void StopControl()
 	{
@@ -26,7 +28,7 @@ public class CharacterControl : MonoBehaviour {
 	}
 	void FixedUpdate()
 	{
-		m_data.Move (m_jump, horizontalInput);
+		m_data.Move (m_jump, horizontalInput, verticalInput);
 		m_jump = false;
 	}
 }
