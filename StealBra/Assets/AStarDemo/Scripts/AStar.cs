@@ -37,7 +37,7 @@ public class AStar {
 					if (i >= 0 && i < m_map.Row && j >= 0 && j < m_map.Column) {
 						AStarMapCell mc = m_map.GetCell (i, j);
 
-						if (mc != null && !mc.IsInCloseList && cur.CanArrive(mc)) {
+						if (mc != null && !mc.IsInCloseList && mc.CanArrive(cur)) {
 							if (mc.IsInOpenList) {
 								int dist = cur.CalculateNeighborDist (mc);
 								if (cur.G + dist < mc.G) {

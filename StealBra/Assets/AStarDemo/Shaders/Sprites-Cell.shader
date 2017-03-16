@@ -74,9 +74,9 @@ Shader "Sprites/Cell"
 			sampler2D _AlphaTex;
 			float _AlphaSplitEnabled;
 
-			fixed4 SampleSpriteTexture (float2 uv)
+			fixed4 SampleSpriteTexture (float2 uv, float4 col)
 			{
-				fixed4 color = tex2D (_MainTex, uv);
+				fixed4 color = tex2D (_MainTex, uv)*col;
 				half4 lineColor = tex2D(_LineTex, uv);
 				half4 mask1 = tex2D(_Mask1Tex, uv) * _Mask1;
 				half4 mask2 = tex2D(_Mask2Tex, uv) * _Mask2;
@@ -99,7 +99,7 @@ Shader "Sprites/Cell"
 
 			fixed4 frag(v2f IN) : SV_Target
 			{
-				fixed4 c = SampleSpriteTexture (IN.texcoord) * IN.color;
+				fixed4 c = SampleSpriteTexture (IN.texcoord, IN.color);
 				c.rgb *= c.a;
 				return c;
 			}

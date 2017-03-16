@@ -39,13 +39,15 @@ public class MapCellCtr : MonoBehaviour {
 	}
 	//
 	protected int m_preType;
-	public void ChangeToNone(){
+	public void ChangeToNone(bool canRevert = true){
 		Debug.Log ("change");
 		Render.sprite = null;
 		m_preType = CellData.cellType; 
 		CellData.cellType = (int)CELL_TYPE.NONE;
-		StartCoroutine (Revert (10));
+		if(canRevert)
+			StartCoroutine (Revert (10));
 	}
+
 	IEnumerator Revert(float second){
 		yield return new WaitForSeconds (second);
 		Debug.Log ("revert");

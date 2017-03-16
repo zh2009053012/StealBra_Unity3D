@@ -23,10 +23,12 @@ public class GameStateStart : IStateBase {
 	GameStart m_owner;
 	MapCtr m_mapCtr;
 	PlayerCtr m_playerCtr;
+	DogCtr m_dogCtr;
+
 	public void Enter(GameStateBase owner)
 	{
 		m_owner = (GameStart)owner;
-
+		//
 		GameObject map = new GameObject ();
 		map.name = "map";
 		m_mapCtr = map.AddComponent<MapCtr> ();
@@ -35,7 +37,16 @@ public class GameStateStart : IStateBase {
 		GameObject prefab = Resources.Load("Player")as GameObject;
 		GameObject player = GameObject.Instantiate (prefab);
 		m_playerCtr = player.GetComponent<PlayerCtr> ();
-		m_playerCtr.Init (2, 2, m_mapCtr);
+		m_playerCtr.Init (2, 1, m_mapCtr);
+		//
+		GameObject dogPrefab = Resources.Load("Dog")as GameObject;
+		GameObject dog = GameObject.Instantiate (dogPrefab);
+		m_dogCtr = dog.GetComponent<DogCtr> ();
+		m_dogCtr.Init (14, 2, m_mapCtr, m_mapCtr.PathfindingMap, m_playerCtr);
+		AStarMapCell asmc = m_mapCtr.PathfindingMap.GetCell(2, 2);
+		asmc.PrintPassArray();
+		//
+		Camera.main.GetComponent<CameraFollow>().FollowTarget = player.transform;
 	}
 
 	public void Execute(GameStateBase owner)
@@ -50,6 +61,10 @@ public class GameStateStart : IStateBase {
 
 	public void Message(string message, object[] parameters)
 	{
-
+		if(message.Equals("MapCellRevert")){
+			
+		}else if(message.Equals("GetSocks")){
+			m_playerCtr.AddMoveSpeed(0.2f);
+		}
 	}
 }

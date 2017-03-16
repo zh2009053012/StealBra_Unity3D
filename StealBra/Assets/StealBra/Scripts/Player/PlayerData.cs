@@ -14,12 +14,19 @@ public class PlayerData : MonoBehaviour {
 	}
 
 	protected MapCtr m_mapCtr;
+	public MapCtr Map{
+		get{return m_mapCtr;}
+	}
 	protected MapCellCtr m_curCell;
+	public MapCellCtr MapCell{
+		get{return m_curCell;}
+	}
 	//
 	[SerializeField]
-	protected float m_moveSpeed=3;
-	[SerializeField]
-	protected float m_climbSpeed=2;
+	protected float m_moveSpeed=2;
+	public void AddMoveSpeed(float add){
+		m_moveSpeed += add;
+	}
 	//
 	protected Vector3 m_targetPos;
 	protected bool m_isMoving = false;
@@ -31,6 +38,12 @@ public class PlayerData : MonoBehaviour {
 	protected Animator m_ani;
 	protected bool m_isAttack = false;
 	protected bool m_isLookLeft = false;
+	//
+	protected System.Action<PlayerData> m_playerMoveOverEvent;
+	public void RegisterMoveOverEvent(System.Action<PlayerData> e){
+		m_playerMoveOverEvent -= e;
+		m_playerMoveOverEvent += e;
+	}
 
 	public void Init(int row, int col, MapCtr map){
 		m_row = row;
@@ -55,9 +68,13 @@ public class PlayerData : MonoBehaviour {
 				m_curCell = m_mapCtr.GetMapCell (m_row, m_col);
 				m_isMoving = false;
 				CheckGround ();
+				if(null != m_playerMoveOverEvent){
+					m_playerMoveOverEvent.Invoke(this);
+				}
 			}
 		}
 	}
+
 	public void OnAttackOver(){
 		m_isAttack = false;
 		m_ani.SetBool ("attack", m_isAttack);
@@ -69,11 +86,11 @@ public class PlayerData : MonoBehaviour {
 		CELL_TYPE underType = (CELL_TYPE)m_mapCtr.GetMapCell (m_row - 1, m_col).CellData.cellType;
 		if (underType == CELL_TYPE.WALL || underType == CELL_TYPE.STONE) {
 			Debug.Log ("under type ok");
-			int look;
-			if (m_isLookLeft)
-				look = -1;
-			else
-				look = 1;
+			int look = 1;
+//			if (m_isLookLeft)
+//				look = -1;
+//			else
+//				look = 1;
 			MapCellCtr target = m_mapCtr.GetMapCell (m_row, m_col+look);
 			if ((CELL_TYPE)target.CellData.cellType == CELL_TYPE.NONE) {
 				Debug.Log ("dir ok");
@@ -183,7 +200,7 @@ public class PlayerData : MonoBehaviour {
 				m_isMoving = true;
 				m_dir = new Vector3 (0, -1, 0);
 				m_isLookLeft = false;
-				if (type == CELL_TYPE.NONE || type == CELL_TYPE.POLE) {
+				if (type != CELL_TYPE.LADDER) {
 					m_ani.SetBool ("jump", true);
 				} else {
 					m_ani.SetBool ("run", false);

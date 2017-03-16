@@ -4,6 +4,13 @@ using System.Collections;
 [SerializeField]
 public class AStarMapCell {
 	protected bool[,] m_passArray = new bool[3,3];
+	public void PrintPassArray(){
+		for(int i=0; i<3; i++){
+			for(int j=0; j<3; j++){
+				Debug.Log(i+","+j+":"+m_passArray[i, j].ToString());
+			}
+		}
+	}
 	protected int m_row;
 	public int Row{
 		get{ return m_row;}
