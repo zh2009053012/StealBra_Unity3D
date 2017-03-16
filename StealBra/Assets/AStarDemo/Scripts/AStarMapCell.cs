@@ -2,7 +2,7 @@
 using System.Collections;
 
 [SerializeField]
-public class MapCell {
+public class AStarMapCell {
 	protected bool[,] m_passArray = new bool[3,3];
 	protected int m_row;
 	public int Row{
@@ -22,11 +22,11 @@ public class MapCell {
 	{
 		m_position = pos;
 	}
-	protected MapCell m_parent;
-	public MapCell GetParent(){
+	protected AStarMapCell m_parent;
+	public AStarMapCell GetParent(){
 		return m_parent;
 	}
-	public void SetParent(MapCell mc){
+	public void SetParent(AStarMapCell mc){
 		m_parent = mc;
 	}
 
@@ -35,7 +35,7 @@ public class MapCell {
 		get{ return m_h; }
 		set{ m_h = value;}
 	}
-	public void CalculateH(MapCell end){
+	public void CalculateH(AStarMapCell end){
 		int dis = Mathf.Abs (end.Row - Row) + Mathf.Abs (end.Column - Column);
 		H = dis * 10;
 	}
@@ -47,10 +47,10 @@ public class MapCell {
 		get{ return m_g;}
 		set{ m_g = value;}
 	}
-	public void CalculateG(MapCell neighbor){
+	public void CalculateG(AStarMapCell neighbor){
 		G = neighbor.G + CalculateNeighborDist (neighbor);
 	}
-	public int CalculateNeighborDist(MapCell neighbor){
+	public int CalculateNeighborDist(AStarMapCell neighbor){
 		int disY = Mathf.Abs (neighbor.Row - Row);
 		int disX = Mathf.Abs (neighbor.Column - Column);
 		if (disX > 1 || disY > 1 || (disX == 0 && disY == 0))
@@ -74,12 +74,12 @@ public class MapCell {
 		set{ m_passArray [2, 1] = value;}
 	}
 	public bool IsToUp{
-		get{ return m_passArray [1, 0];}
-		set{ m_passArray [1, 0] = value;}
-	}
-	public bool IsToDown{
 		get{ return m_passArray [1, 2];}
 		set{ m_passArray [1, 2] = value;}
+	}
+	public bool IsToDown{
+		get{ return m_passArray [1, 0];}
+		set{ m_passArray [1, 0] = value;}
 	}
 	public bool IsToLeftUp{
 		get{ return m_passArray [0, 0];}
@@ -97,9 +97,9 @@ public class MapCell {
 		get{ return m_passArray [2, 2];}
 		set{ m_passArray [2, 2] = value;}
 	}
-	public MapCell(){}
+	public AStarMapCell(){}
 
-	public bool CanArrive(MapCell target){
+	public bool CanArrive(AStarMapCell target){
 		int x = target.Column - Column + 1;
 		int y = target.Row - Row + 1;
 		if (x >= 0 && x < 3 && y >= 0 && y < 3) {

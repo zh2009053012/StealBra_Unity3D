@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 public class AStar {
 
-	private static List<MapCell> m_openList = new List<MapCell>();
-	private static List<MapCell> m_closeList = new List<MapCell>();
-	private static Map m_map;
+	private static List<AStarMapCell> m_openList = new List<AStarMapCell>();
+	private static List<AStarMapCell> m_closeList = new List<AStarMapCell>();
+	private static AStarMap m_map;
 
-	public static List<MapCell> CalculatePath(MapCell start, MapCell end, Map map){
+	public static List<AStarMapCell> CalculatePath(AStarMapCell start, AStarMapCell end, AStarMap map){
 		m_openList.Clear ();
 		m_closeList.Clear ();
 		m_map = map;
@@ -22,20 +22,20 @@ public class AStar {
 
 		while (true) {
 			int nearestIndex = FindNearestCellInOpenList ();
-			MapCell cur;
+			AStarMapCell cur;
 			if (nearestIndex >= 0) {
 				cur = m_openList [nearestIndex];
 				if (cur.Equals (end)) {
 					return BacktrackPath (cur);
 				}
 			} else {
-				return new List<MapCell> ();
+				return new List<AStarMapCell> ();
 			}
 
 			for (int i = cur.Row - 1; i <= cur.Row + 1; i++) {
 				for (int j = cur.Column - 1; j <= cur.Column + 1; j++) {
 					if (i >= 0 && i < m_map.Row && j >= 0 && j < m_map.Column) {
-						MapCell mc = m_map.GetCell (i, j);
+						AStarMapCell mc = m_map.GetCell (i, j);
 
 						if (mc != null && !mc.IsInCloseList && cur.CanArrive(mc)) {
 							if (mc.IsInOpenList) {
@@ -60,12 +60,12 @@ public class AStar {
 			m_closeList.Add (cur);
 			cur.IsInCloseList = true;
 		}
-		return new List<MapCell> ();
+		return new List<AStarMapCell> ();
 	}
 	private static void ResetMap(){
 		for (int i = 0; i < m_map.Row; i++) {
 			for (int j = 0; j < m_map.Column; j++) {
-				MapCell mc = m_map.GetCell (i, j);
+				AStarMapCell mc = m_map.GetCell (i, j);
 				if (mc != null) {
 					mc.IsInOpenList = false;
 					mc.IsInCloseList = false;
@@ -76,11 +76,11 @@ public class AStar {
 			}
 		}
 	}
-	private static List<MapCell> BacktrackPath(MapCell end){
+	private static List<AStarMapCell> BacktrackPath(AStarMapCell end){
 		if (end == null)
-			return new List<MapCell> ();
-		List<MapCell> list = new List<MapCell> ();
-		MapCell mc = end;
+			return new List<AStarMapCell> ();
+		List<AStarMapCell> list = new List<AStarMapCell> ();
+		AStarMapCell mc = end;
 		while (mc.GetParent() != null) {
 			list.Insert (0, mc);
 			mc = mc.GetParent();

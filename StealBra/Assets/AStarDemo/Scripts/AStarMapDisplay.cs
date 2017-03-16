@@ -8,11 +8,11 @@ using UnityEditor;
 /// </summary>
 
 [ExecuteInEditMode]
-public class MapDisplay : MonoBehaviour {
+public class AStarMapDisplay : MonoBehaviour {
 
 	public int m_row;
 	public int m_column;
-	public MapCellDisplay[,] m_cellArray;
+	public AStarMapCellDisplay[,] m_cellArray;
 	public string m_filePath;
 	private int m_mapRow, m_mapCol;
 
@@ -37,7 +37,7 @@ public class MapDisplay : MonoBehaviour {
 		}
 	}
 	public void Recreate(GameObject curSel){
-		MapCellDisplay mcd = curSel.GetComponent<MapCellDisplay>();
+		AStarMapCellDisplay mcd = curSel.GetComponent<AStarMapCellDisplay>();
 		int col = -1;
 		int row = -1;
 		if(mcd != null){
@@ -62,7 +62,7 @@ public class MapDisplay : MonoBehaviour {
 	public void CreateMap(){
 		ClearMap ();
 
-		m_cellArray = new MapCellDisplay[m_column, m_row];
+		m_cellArray = new AStarMapCellDisplay[m_column, m_row];
 
 		GameObject prefab = Resources.Load ("cell")as GameObject;
 		SpriteRenderer sr = prefab.GetComponent<SpriteRenderer> ();
@@ -77,7 +77,7 @@ public class MapDisplay : MonoBehaviour {
 				go.name = i + "_" + j;
 				go.GetComponent<Renderer> ().sharedMaterial = CreateMat (go.name);
 
-				m_cellArray [j, i] = go.GetComponent<MapCellDisplay> ();
+				m_cellArray [j, i] = go.GetComponent<AStarMapCellDisplay> ();
 				m_cellArray[j, i].Owner = this;
 				m_cellArray[j, i].Row = i;
 				m_cellArray[j, i].Column = j;
@@ -113,8 +113,8 @@ public class MapDisplay : MonoBehaviour {
 		return mat;
 	}
 
-	Map ToMap(){
-		Map map = new Map (m_row, m_column);
+	AStarMap ToMap(){
+		AStarMap map = new AStarMap (m_row, m_column);
 		for (int i = 0; i < m_row; i++) {
 			for (int j = 0; j < m_column; j++) {
 				map.SetCell (i, j, m_cellArray [j, i].ToMapCell());
@@ -122,7 +122,7 @@ public class MapDisplay : MonoBehaviour {
 		}
 		return map;
 	}
-	void FromMap(Map map){
+	void FromMap(AStarMap map){
 		ClearMap ();
 		m_column = map.Column;
 		m_row = map.Row;
@@ -143,14 +143,14 @@ public class MapDisplay : MonoBehaviour {
 		if (string.IsNullOrEmpty (m_filePath)) {
 			return;
 		}
-		MapStream.Write (ToMap (), m_filePath);
+		AStarMapStream.Write (ToMap (), m_filePath);
 		Debug.Log ("Save success.");
 	}
 	void MapCatch(){
-		MapStream.Write (ToMap (), Application.dataPath+"/MapCatch");
+		AStarMapStream.Write (ToMap (), Application.dataPath+"/MapCatch");
 	}
 	void ReadCatch(){
-		Map map = MapStream.Read (Application.dataPath+"/MapCatch");
+		AStarMap map = AStarMapStream.Read (Application.dataPath+"/MapCatch");
 		FromMap (map);
 		FileUtil.DeleteFileOrDirectory(Application.dataPath+"/MapCatch");
 	}
@@ -162,7 +162,7 @@ public class MapDisplay : MonoBehaviour {
 		if (string.IsNullOrEmpty (m_filePath)) {
 			return ;
 		}
-		Map map = MapStream.Read (m_filePath);
+		AStarMap map = AStarMapStream.Read (m_filePath);
 		FromMap (map);
 
 	}

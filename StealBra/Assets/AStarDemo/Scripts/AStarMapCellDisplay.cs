@@ -2,9 +2,9 @@
 using System.Collections;
 
 [ExecuteInEditMode]
-public class MapCellDisplay : MonoBehaviour {
+public class AStarMapCellDisplay : MonoBehaviour {
 
-	public MapDisplay Owner;
+	public AStarMapDisplay Owner;
 	public int Row, Column;
 
 	public bool IsToLeft=true;
@@ -101,8 +101,8 @@ public class MapCellDisplay : MonoBehaviour {
 
 	}
 
-	public MapCell ToMapCell(){
-		MapCell mc = new MapCell ();
+	public AStarMapCell ToMapCell(){
+		AStarMapCell mc = new AStarMapCell ();
 		mc.IsToLeft = IsToLeft;
 		mc.IsToRight = IsToRight;
 		mc.IsToUp = IsToUp;
@@ -115,7 +115,7 @@ public class MapCellDisplay : MonoBehaviour {
 		mc.Column = Column;
 		return mc;
 	}
-	public void FromMapCell(MapCell mc){
+	public void FromMapCell(AStarMapCell mc){
 		IsToLeft = mc.IsToLeft;
 		IsToRight = mc.IsToRight;
 		IsToUp = mc.IsToUp;

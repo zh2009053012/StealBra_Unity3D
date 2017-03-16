@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Map {
+public class AStarMap {
 
 	protected int row;
 	public int Row{
@@ -30,14 +30,20 @@ public class Map {
 		return startPos;
 	}
 
-	public List<MapCell> cells ;
-	public MapCell GetCell(int row, int column){
+	public List<AStarMapCell> cells ;
+	public AStarMapCell GetCell(int row, int column){
 		if (row > this.row || column > this.column) {
 			return null;
 		}
 		return cells [row * this.column + column];
 	}
-	public bool SetCell(int row, int column, MapCell mc){
+	public AStarMapCell GetCell(Vector2 pos){
+		Vector2 offset = pos - startPos;
+		int row = Mathf.FloorToInt( offset.y / cellSize.y );
+		int col = Mathf.FloorToInt (offset.x / cellSize.x);
+		return GetCell (row, col);
+	}
+	public bool SetCell(int row, int column, AStarMapCell mc){
 		if (row > this.row || column > this.column) {
 			return false;
 		}
@@ -45,34 +51,34 @@ public class Map {
 		return true;
 	}
 
-	public Map(int row, int column){
+	public AStarMap(int row, int column){
 		this.row = row;
 		this.column = column;
-		cells = new List<MapCell>();
+		cells = new List<AStarMapCell>();
 
 		for (int i = 0; i < column; i++) {
 			for (int j = 0; j < row; j++) {
-				cells.Add (new MapCell ());
+				cells.Add (new AStarMapCell ());
 			}
 		}
 	}
-	public Map(int row, int column, Vector2 cellSize, Vector2 startPos){
+	public AStarMap(int row, int column, Vector2 cellSize, Vector2 startPos){
 		this.row = row;
 		this.column = column;
-		cells = new List<MapCell>();
+		cells = new List<AStarMapCell>();
 
 		for (int i = 0; i < column; i++) {
 			for (int j = 0; j < row; j++) {
-				cells.Add (new MapCell ());
+				cells.Add (new AStarMapCell ());
 			}
 		}
 		this.cellSize = cellSize;
 		this.startPos = startPos;
 	}
-	public Map(){
+	public AStarMap(){
 		row = 0;
 		column = 0;
-		cells = new List<MapCell>();
+		cells = new List<AStarMapCell>();
 	}
 	public void CalculateCellPosition(Vector2 cellSize, Vector2 startPos){
 		this.cellSize = cellSize;

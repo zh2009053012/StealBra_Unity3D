@@ -2,11 +2,11 @@
 using System.Collections;
 using UnityEditor;
 
-[CustomEditor(typeof(MapCellDisplay))]
-public class MapCellEditor : Editor {
+[CustomEditor(typeof(AStarMapCellDisplay))]
+public class AStarMapCellEditor : Editor {
 
 	private SerializedObject generator;
-	private MapCellDisplay m_mapDisplay;
+	private AStarMapCellDisplay m_mapDisplay;
 
 	private SerializedProperty IsToLeft;
 	private SerializedProperty IsToRight;
@@ -23,7 +23,7 @@ public class MapCellEditor : Editor {
 
 	void OnEnable(){
 		generator = new SerializedObject (target);
-		m_mapDisplay = (MapCellDisplay)target;
+		m_mapDisplay = (AStarMapCellDisplay)target;
 		m_mapDisplay.Init ();
 
 		IsToLeft = generator.FindProperty ("IsToLeft");
