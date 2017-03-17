@@ -56,9 +56,12 @@ public class AStarMap {
 		this.column = column;
 		cells = new List<AStarMapCell>();
 
-		for (int i = 0; i < column; i++) {
-			for (int j = 0; j < row; j++) {
-				cells.Add (new AStarMapCell ());
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < column; j++) {
+				AStarMapCell cell = new AStarMapCell ();
+				cell.Row = i;
+				cell.Column = j;
+				cells.Add (cell);
 			}
 		}
 	}
@@ -67,9 +70,12 @@ public class AStarMap {
 		this.column = column;
 		cells = new List<AStarMapCell>();
 
-		for (int i = 0; i < column; i++) {
-			for (int j = 0; j < row; j++) {
-				cells.Add (new AStarMapCell ());
+		for (int i = 0; i < row; i++) {
+			for (int j = 0; j < column; j++) {
+				AStarMapCell cell = new AStarMapCell ();
+				cell.Row = i;
+				cell.Column = j;
+				cells.Add (cell);
 			}
 		}
 		this.cellSize = cellSize;

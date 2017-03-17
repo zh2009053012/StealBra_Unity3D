@@ -3,10 +3,7 @@ using System.Collections;
 
 
 public class MapCellCtr : MonoBehaviour {
-	protected AStarMapCell m_aStardata;
-	public AStarMapCell AStarData{
-		get{ return m_aStardata;}
-	}
+
 	public MapCellData CellData;
 	public MapCtr Owner;
 	protected SpriteRenderer m_render;
@@ -40,7 +37,11 @@ public class MapCellCtr : MonoBehaviour {
 	//
 	protected int m_preType;
 	public void ChangeToNone(bool canRevert = true){
-		Debug.Log ("change");
+		if ((CELL_TYPE)CellData.cellType == CELL_TYPE.WALL) {
+			
+			SpriteMap2AStarMap.ResetAStarMapCell (Owner.Map, CellData, ref Owner.PathfindingMap);
+		}
+		//
 		Render.sprite = null;
 		m_preType = CellData.cellType; 
 		CellData.cellType = (int)CELL_TYPE.NONE;
@@ -50,10 +51,15 @@ public class MapCellCtr : MonoBehaviour {
 
 	IEnumerator Revert(float second){
 		yield return new WaitForSeconds (second);
-		Debug.Log ("revert");
+
 		if (!string.IsNullOrEmpty (CellData.resName))
 			Render.sprite = Resources.Load ("Sprites/" + CellData.resName, typeof(Sprite))as Sprite;
 		CellData.cellType = m_preType;
+		//
+		if ((CELL_TYPE)CellData.cellType == CELL_TYPE.WALL) {
+
+			SpriteMap2AStarMap.ResetAStarMapCell (Owner.Map, CellData, ref Owner.PathfindingMap);
+		}
 		//
 		//GameStateManager.Instance ().FSM.CurrentState.Message ("", null);
 	}

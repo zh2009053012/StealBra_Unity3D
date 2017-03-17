@@ -9,6 +9,7 @@ public class AStarMapEditor : Editor {
 
 	private SerializedProperty m_row;
 	private SerializedProperty m_column;
+	private SerializedProperty m_isWireFrame;
 
 	void OnEnable(){
 		generator = new SerializedObject (target);
@@ -16,6 +17,7 @@ public class AStarMapEditor : Editor {
 
 		m_row = generator.FindProperty ("m_row");
 		m_column = generator.FindProperty ("m_column");
+		m_isWireFrame = generator.FindProperty ("m_isWireFrame");
 	}
 	public override void OnInspectorGUI(){
 		generator.Update ();
@@ -53,6 +55,12 @@ public class AStarMapEditor : Editor {
 		EditorGUILayout.BeginHorizontal();
 		if (GUILayout.Button (new GUIContent ("Wall Around"), GUILayout.Width (100))) {
 			m_mapDisplay.WallAround();
+		}
+		EditorGUI.BeginChangeCheck ();
+		m_isWireFrame.boolValue = EditorGUILayout.ToggleLeft ("WireFrame", m_isWireFrame.boolValue, GUILayout.Width (100));
+		if (EditorGUI.EndChangeCheck ()) {
+			generator.ApplyModifiedProperties ();
+			m_mapDisplay.SetWireFrameModel ();
 		}
 		EditorGUILayout.EndHorizontal ();
 

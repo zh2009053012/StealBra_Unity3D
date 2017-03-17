@@ -37,7 +37,11 @@ public class DogCtr : MonoBehaviour {
 		if(list.Count > 0){
 			m_data.Move(list[0].Column - m_data.Column, list[0].Row - m_data.Row);
 		}else{
-			Debug.Log("can not find");
+			if (m_data.IsLookLeft) {
+				m_data.Move (-1, 0);
+			}else{
+				m_data.Move (1, 0);
+			}
 			StartCoroutine(RetryFindPath(1));
 		}
 	}

@@ -38,6 +38,9 @@ public class PlayerData : MonoBehaviour {
 	protected Animator m_ani;
 	protected bool m_isAttack = false;
 	protected bool m_isLookLeft = false;
+	public bool IsLookLeft{
+		get{ return m_isLookLeft;}
+	}
 	//
 	protected System.Action<PlayerData> m_playerMoveOverEvent;
 	public void RegisterMoveOverEvent(System.Action<PlayerData> e){
@@ -79,6 +82,7 @@ public class PlayerData : MonoBehaviour {
 		m_isAttack = false;
 		m_ani.SetBool ("attack", m_isAttack);
 	}
+
 	public void CheckAttack(){
 		if (m_isMoving || m_ani.GetBool("climb"))
 			return;
@@ -89,8 +93,6 @@ public class PlayerData : MonoBehaviour {
 			int look = 1;
 //			if (m_isLookLeft)
 //				look = -1;
-//			else
-//				look = 1;
 			MapCellCtr target = m_mapCtr.GetMapCell (m_row, m_col+look);
 			if ((CELL_TYPE)target.CellData.cellType == CELL_TYPE.NONE) {
 				Debug.Log ("dir ok");

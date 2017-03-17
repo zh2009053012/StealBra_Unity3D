@@ -102,6 +102,8 @@ public class AStarMapCellEditor : Editor {
 		}
 		EditorGUILayout.EndHorizontal ();
 
+		generator.ApplyModifiedProperties ();
+
 		if(IsObstacle.boolValue){
 			m_mapDisplay.Owner.SetObstacle(m_mapDisplay.Row, m_mapDisplay.Column);
 		}
@@ -113,8 +115,5 @@ public class AStarMapCellEditor : Editor {
 		m_mapDisplay.ShowLeftDown ();
 		m_mapDisplay.ShowDown ();
 		m_mapDisplay.ShowRightDown ();
-
-
-		generator.ApplyModifiedProperties ();
 	}
 }

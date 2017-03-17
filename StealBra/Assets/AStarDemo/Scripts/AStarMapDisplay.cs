@@ -14,6 +14,7 @@ public class AStarMapDisplay : MonoBehaviour {
 	public int m_column;
 	public AStarMapCellDisplay[,] m_cellArray;
 	public string m_filePath;
+	public bool m_isWireFrame=false;
 	private int m_mapRow, m_mapCol;
 
 	public void WallAround(){
@@ -24,6 +25,14 @@ public class AStarMapDisplay : MonoBehaviour {
 			}
 		}
 		Recreate(Selection.activeGameObject);
+	}
+	public void SetWireFrameModel(){
+		
+		for (int i = 0; i < m_row; i++) {
+			for (int j = 0; j < m_column; j++) {
+				m_cellArray [j, i].SetWireFrameModel (m_isWireFrame);
+			}
+		}
 	}
 	public void SetObstacle(int row, int col){
 		m_cellArray[col, row].SetSelfObstacle();

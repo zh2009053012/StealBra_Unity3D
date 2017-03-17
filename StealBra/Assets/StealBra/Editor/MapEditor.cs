@@ -67,6 +67,12 @@ public class MapEditor : Editor {
 		}
 		EditorGUILayout.EndHorizontal ();
 
+		EditorGUILayout.BeginHorizontal ();
+		if (GUILayout.Button (new GUIContent ("ToAStarMap"), GUILayout.Width (100))) {
+			m_mapDisplay.AutoAStarMap ();
+		}
+		EditorGUILayout.EndHorizontal ();
+
 		generator.ApplyModifiedProperties ();
 	}
 }

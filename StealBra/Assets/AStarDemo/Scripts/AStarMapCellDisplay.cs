@@ -16,33 +16,9 @@ public class AStarMapCellDisplay : MonoBehaviour {
 	public bool IsToRightUp=true;
 	public bool IsToRightDown=true;
 
-//	private bool[,] m_passArray = new bool[3,3];
-
 	public bool IsAllOpen = true;
 	public bool IsAllClose = false;
 	public bool IsObstacle = false;
-
-//	void ArrayToBoolValue(){
-//		IsToLeftUp = m_passArray[0, 0];
-//		IsToUp = m_passArray[1, 0];
-//		IsToRightUp = m_passArray[2, 0];
-//		IsToLeft = m_passArray[0, 1];
-//		IsToRight = m_passArray[2, 1];
-//		IsToLeftDown = m_passArray[0, 2];
-//		IsToDown = m_passArray[1, 2];
-//		IsToRightDown = m_passArray[2, 2];
-//	}
-//	void BoolValueToArray(){
-//
-//		m_passArray[0, 0] = IsToLeftUp;
-//		m_passArray[1, 0] = IsToUp;
-//		m_passArray[2, 0] =IsToRightUp;
-//		m_passArray[0, 1] =IsToLeft;
-//		m_passArray[2, 1] =IsToRight;
-//		m_passArray[0, 2] =IsToLeftDown;
-//		m_passArray[1, 2] =IsToDown;
-//		m_passArray[2, 2] =IsToRightDown;
-//	}
 
 	public void SetSelfObstacle(){
 		IsAllClose = true;
@@ -150,16 +126,11 @@ public class AStarMapCellDisplay : MonoBehaviour {
 		else
 			return 0.0f;
 	}
-	void Update(){
-		if (!IsObstacle) {
-			ShowLeft ();
-			ShowLeftDown ();
-			ShowLeftUp ();
-			ShowRight ();
-			ShowRightDown ();
-			ShowRightUp ();
-			ShowUp ();
-			ShowDown ();
+	public void SetWireFrameModel(bool isWireFrame){
+		if (isWireFrame) {
+			GetComponent<SpriteRenderer> ().color = new Color (1, 1, 1, 0);
+		} else {
+			GetComponent<SpriteRenderer> ().color = Color.white;
 		}
 	}
 	public void ShowLeft(){

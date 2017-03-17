@@ -153,4 +153,17 @@ public class MapDisplay : MonoBehaviour {
 		MapStream.Write (ToMapData (), mapFilePath);
 		Debug.Log ("Save success.");
 	}
+	public void AutoAStarMap(){
+		if (cells == null)
+			return;
+		string filePath;
+		filePath = EditorUtility.SaveFilePanel ("Save map file", Application.dataPath, "", "txt");
+
+		if (string.IsNullOrEmpty (filePath)) {
+			return;
+		}
+		AStarMap map = SpriteMap2AStarMap.SpriteMapToAStarMap (ToMapData ());
+		AStarMapStream.Write (map, filePath);
+		Debug.Log ("AutoAStarMap success.");
+	}
 }

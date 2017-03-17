@@ -3,13 +3,11 @@ using System.Collections;
 
 public class MapCtr : MonoBehaviour {
 	protected MapCellCtr[,] cells;
-	protected AStarMap m_aStarMap;
-	public AStarMap PathfindingMap{
-		get{ 
-			return m_aStarMap;
-		}
-	}
+	public AStarMap PathfindingMap;
 	protected MapData m_map;
+	public MapData Map{
+		get{ return m_map;}
+	}
 	public MapCellCtr GetMapCell(int row, int col){
 		if (row >= 0 && col >= 0 && row < Row && col < Column) {
 			return cells [col, row];
@@ -71,7 +69,7 @@ public class MapCtr : MonoBehaviour {
 		}
 		Debug.Log (Application.dataPath);
 		string dir = Application.dataPath + "/";
-		m_aStarMap = AStarMapStream.Read (dir+fileName+"_astar.txt");
+		PathfindingMap = AStarMapStream.Read (dir+fileName+"_astar.txt");
 		MapData map = MapStream.Read (dir+fileName+".txt");
 		FromMapData (map);
 	}
