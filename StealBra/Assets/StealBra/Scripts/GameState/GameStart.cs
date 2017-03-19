@@ -12,17 +12,5 @@ public class GameStart : GameStateBase {
 //		FSM.GlobalState = GameGlobalState.Instance ();
 //		FSM.GlobalState.Enter (FSM.Owner);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		if (null != FSM)
-			FSM.Update ();
-	}
-	void OnDestroy()
-	{
-		if (FSM != null && FSM.GlobalState != null) {
-			FSM.GlobalState.Exit (FSM.Owner);
-			FSM.CurrentState.Exit (FSM.Owner);
-		}
-	}
+
 }

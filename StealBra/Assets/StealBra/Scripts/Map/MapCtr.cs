@@ -1,9 +1,47 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class MapCtr : MonoBehaviour {
+	protected PlayerCtr m_player;
+	public PlayerCtr Player{
+		get{return m_player;}
+	}
+	public List<DogCtr> m_dogList = new List<DogCtr>();
+	public DogCtr GetDog(int row, int col){
+		for(int i=0; i<m_dogList.Count; i++){
+			if(m_dogList[i].Row == row && m_dogList[i].Column == col){
+				return m_dogList[i];
+			}
+		}
+		return null;
+	}
+	//
+	protected int exitRow, exitCol;
+	public int ExitRow{
+		get{
+			return exitRow;
+		}
+	}
+	public int ExitCol{
+		get{return exitCol;}
+	}
+	protected bool canExit=false;
+	public bool CanExit{
+		get{return canExit;}
+	}
+	public void ShowExit(bool isShow){
+		canExit = isShow;
+		if(isShow){
+			cells[exitCol, exitRow].Render.sprite = Resources.Load ("Sprites/door", typeof(Sprite))as Sprite;
+		}else{
+			cells[exitCol, exitRow].Render.sprite = null;
+		}
+	}
+	//
 	protected MapCellCtr[,] cells;
 	public AStarMap PathfindingMap;
+	protected List<GameObject> m_decorationList = new List<GameObject>();
 	protected MapData m_map;
 	public MapData Map{
 		get{ return m_map;}
@@ -31,6 +69,27 @@ public class MapCtr : MonoBehaviour {
 		get{return m_map.column;}
 	}
 
+	public void Clear(){
+		if(null != Player)
+			GameObject.Destroy(Player.gameObject);
+		foreach(DogCtr dog in m_dogList){
+			GameObject.Destroy(dog.gameObject);
+		}
+		m_player = null;
+		m_dogList.Clear();
+		//
+		for(int i=0; i<m_map.row; i++){
+			for(int j=0; j<m_map.column; j++){
+				GameObject.Destroy(cells[j, i]);
+				cells[j, i]= null;
+			}
+		}
+		foreach(GameObject go in m_decorationList){
+			GameObject.Destroy(go);
+		}
+		m_decorationList.Clear();
+	}
+
 	void FromMapData(MapData md){
 		m_map = md;
 		transform.position = new Vector3 ((float)md.startPosX, (float)md.startPosY, (float)md.startPosZ);
@@ -46,7 +105,23 @@ public class MapCtr : MonoBehaviour {
 			mcc.Init (this, item);
 			cells [item.col, item.row] = mcc;
 		}
+		foreach(MapCellData item in md.cells){
+			switch((CELL_ADDITION)item.cellAdd){
+			case CELL_ADDITION.EXIT:
+				exitRow = item.row;
+				exitCol = item.col;
+				ShowExit(false);
+				break;
+			case CELL_ADDITION.PLAYER:
+				LoadPlayer(item.row, item.col);
+				break;
+			case CELL_ADDITION.DOG:
+				LoadDog(item.row, item.col);
+				break;
+			}
+		}
 		//
+		m_decorationList.Clear();
 		foreach(DecorationData item in md.decorations){
 			GameObject go = new GameObject ();
 			go.AddComponent<SpriteRenderer> ();
@@ -61,7 +136,21 @@ public class MapCtr : MonoBehaviour {
 				go.GetComponent<SpriteRenderer> ().sprite = null;
 			go.GetComponent<SpriteRenderer> ().sortingOrder = item.sortOrder;
 			go.GetComponent<SpriteRenderer> ().sortingLayerName = item.sortLayer;
+			m_decorationList.Add(go);
 		}
+	}
+	void LoadPlayer(int row, int col){
+		GameObject prefab = Resources.Load("Player")as GameObject;
+		GameObject player = GameObject.Instantiate (prefab);
+		m_player = player.GetComponent<PlayerCtr> ();
+		m_player.Init (row, col, this);
+	}
+	void LoadDog(int row, int col){
+		GameObject dogPrefab = Resources.Load("Dog")as GameObject;
+		GameObject dog = GameObject.Instantiate (dogPrefab);
+		DogCtr m_dogCtr = dog.GetComponent<DogCtr> ();
+		m_dogCtr.Init (row, col, this, PathfindingMap, m_player);
+		m_dogList.Add(m_dogCtr);
 	}
 	public void ReadMap(string fileName){
 		if (string.IsNullOrEmpty (fileName)) {

@@ -38,7 +38,7 @@ public class SceneLoading : MonoBehaviour {
 		if (null != async) {
 			progress = (int)(async.progress * 100);  
 			m_slider.value = async.progress;
-			m_text.text = (progress).ToString () + "%";
+			m_text.text = "Loading..."+(progress).ToString () + "%";
 		}
     }   
 }

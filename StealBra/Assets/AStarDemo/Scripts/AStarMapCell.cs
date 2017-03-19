@@ -7,7 +7,7 @@ public class AStarMapCell {
 	public void PrintPassArray(){
 		for(int i=0; i<3; i++){
 			for(int j=0; j<3; j++){
-				Debug.Log(i+","+j+":"+m_passArray[i, j].ToString());
+				//Debug.Log(i+","+j+":"+m_passArray[i, j].ToString());
 			}
 		}
 	}

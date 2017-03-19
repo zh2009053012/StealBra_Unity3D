@@ -8,6 +8,8 @@ public class MapCellDisplay : MonoBehaviour {
 	protected MapDisplay m_owner;
 	[SerializeField]
 	protected CELL_TYPE m_type;
+	[SerializeField]
+	protected CELL_ADDITION m_addition;
 	protected MapCellData m_data = new MapCellData();
 	protected SpriteRenderer m_render;
 	protected SpriteRenderer Render{
@@ -21,6 +23,7 @@ public class MapCellDisplay : MonoBehaviour {
 	public MapCellData CellData{
 		get{
 			m_data.cellType = (int)m_type;
+			m_data.cellAdd = (int)m_addition;
 			if (Render.sprite != null)
 				m_data.resName = Render.sprite.name;
 			else

@@ -11,10 +11,17 @@ public enum CELL_TYPE{
 	SOCKS,
 	NONE,//air
 }
+public enum CELL_ADDITION{
+	NONE,
+	PLAYER,
+	DOG,
+	EXIT,
+}
 [System.Serializable]
 public class MapCellData {
 
 	public int cellType;
+	public int cellAdd;
 	public string resName;
 	public int row;
 	public int col;
@@ -22,6 +29,7 @@ public class MapCellData {
 	public int sortOrder;
 	public MapCellData(){
 		cellType = 0;
+		cellAdd = 0;
 		resName = "";
 		row = 0;
 		col = 0;

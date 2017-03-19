@@ -2,6 +2,13 @@
 using System.Collections;
 
 public class PlayerData : MonoBehaviour {
+	public enum PlayerState{
+		RUN,
+		CLIMB,
+		ATTACK,
+		STAND,
+		DEAD,
+	}
 	[SerializeField]
 	protected GameObject m_body;
 	//stay pos
@@ -11,6 +18,18 @@ public class PlayerData : MonoBehaviour {
 	}
 	public int Column{
 		get{ return m_col;}
+	}
+	protected PlayerState m_state;
+	public PlayerState State{
+		get{return m_state;}
+		set{
+			if(value != m_state){
+				m_state = value;
+				if(null != m_playerStateChangeEvent){
+					m_playerStateChangeEvent.Invoke(this);
+				}
+			}
+		}
 	}
 
 	protected MapCtr m_mapCtr;
@@ -47,8 +66,14 @@ public class PlayerData : MonoBehaviour {
 		m_playerMoveOverEvent -= e;
 		m_playerMoveOverEvent += e;
 	}
+	protected System.Action<PlayerData> m_playerStateChangeEvent;
+	public void RegisterStateChangeEvent(System.Action<PlayerData> e){
+		m_playerStateChangeEvent -= e;
+		m_playerStateChangeEvent += e;
+	}
 
 	public void Init(int row, int col, MapCtr map){
+		m_isMoving = false;
 		m_row = row;
 		m_col = col;
 		m_dir = new Vector3 (1, 0, 0);
@@ -71,6 +96,7 @@ public class PlayerData : MonoBehaviour {
 				m_curCell = m_mapCtr.GetMapCell (m_row, m_col);
 				m_isMoving = false;
 				CheckGround ();
+				State = PlayerState.STAND;
 				if(null != m_playerMoveOverEvent){
 					m_playerMoveOverEvent.Invoke(this);
 				}
@@ -81,6 +107,7 @@ public class PlayerData : MonoBehaviour {
 	public void OnAttackOver(){
 		m_isAttack = false;
 		m_ani.SetBool ("attack", m_isAttack);
+		State = PlayerState.STAND;
 	}
 
 	public void CheckAttack(){
@@ -102,7 +129,8 @@ public class PlayerData : MonoBehaviour {
 					m_isAttack = true;
 					m_ani.SetBool ("run", false);
 					m_ani.SetBool ("attack", m_isAttack);
-					targetDown.ChangeToNone ();
+					State = PlayerState.ATTACK;
+					targetDown.ChangeToNone (true);
 				}
 			}
 		}
@@ -119,6 +147,7 @@ public class PlayerData : MonoBehaviour {
 			m_body.transform.localEulerAngles = new Vector3 (0, 90, 0);
 			m_ani.SetBool ("run", false);
 			m_ani.SetBool ("climb", true);
+			State = PlayerState.CLIMB;
 			m_isLookLeft = true;
 		}
 	}
@@ -135,6 +164,7 @@ public class PlayerData : MonoBehaviour {
 					m_body.transform.localEulerAngles = new Vector3 (0, 90, 0);
 					m_ani.SetBool ("run", false);
 					m_ani.SetBool ("climb", true);
+					State = PlayerState.CLIMB;
 					m_isLookLeft = true;
 				} else {
 					transform.localEulerAngles = new Vector3 (0, 0, 0);
@@ -142,6 +172,7 @@ public class PlayerData : MonoBehaviour {
 					m_isLookLeft = true;
 					m_ani.SetBool ("run", true);
 					m_ani.SetBool ("climb", false);
+					State = PlayerState.RUN;
 				}
 					
 			} else {
@@ -162,6 +193,7 @@ public class PlayerData : MonoBehaviour {
 					m_body.transform.localEulerAngles = new Vector3 (0, 90, 0);
 					m_ani.SetBool ("run", false);
 					m_ani.SetBool ("climb", true);
+					State = PlayerState.CLIMB;
 					m_isLookLeft = true;
 				} else {
 					transform.localEulerAngles = new Vector3 (0, 0, 0);
@@ -169,6 +201,7 @@ public class PlayerData : MonoBehaviour {
 					m_isLookLeft = false;
 					m_ani.SetBool ("run", true);
 					m_ani.SetBool ("climb", false);
+					State = PlayerState.RUN;
 				}
 
 			} else {
@@ -186,6 +219,7 @@ public class PlayerData : MonoBehaviour {
 				m_dir = new Vector3 (0, 1, 0);
 				m_ani.SetBool ("run", false);
 				m_ani.SetBool ("climb", true);
+				State = PlayerState.CLIMB;
 				m_isLookLeft = false;
 				transform.localEulerAngles = new Vector3 (0, 0, 0);
 			} else {
@@ -207,6 +241,7 @@ public class PlayerData : MonoBehaviour {
 				} else {
 					m_ani.SetBool ("run", false);
 					m_ani.SetBool ("climb", true);
+					State = PlayerState.CLIMB;
 				}
 				transform.localEulerAngles = new Vector3 (0, 0, 0);
 			} else {

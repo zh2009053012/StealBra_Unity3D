@@ -22,49 +22,150 @@ public class GameStateStart : IStateBase {
 	//
 	GameStart m_owner;
 	MapCtr m_mapCtr;
-	PlayerCtr m_playerCtr;
-	DogCtr m_dogCtr;
+	FightUI m_uiCtr;
+	FailureUI m_failCtr;
+	VectoryUI m_vectoryCtr;
+	int underpantNum=0, braNum=0;
 
 	public void Enter(GameStateBase owner)
 	{
+		underpantNum = 0;
+		braNum = 0;
 		m_owner = (GameStart)owner;
+		//
+		GameObject prefab = Resources.Load("UI/FightCanvas")as GameObject;
+		GameObject go = GameObject.Instantiate(prefab);
+		m_uiCtr= go.GetComponent<FightUI>();
+		//
+		GameObject failPrefab = Resources.Load("UI/FailureCanvas")as GameObject;
+		GameObject fail = GameObject.Instantiate(failPrefab);
+		m_failCtr= fail.GetComponent<FailureUI>();
+		m_failCtr.gameObject.SetActive(false);
+		//
+		GameObject vectoryPrefab = Resources.Load("UI/VectoryCanvas")as GameObject;
+		GameObject vectory = GameObject.Instantiate(vectoryPrefab);
+		m_vectoryCtr= vectory.GetComponent<VectoryUI>();
+		m_vectoryCtr.gameObject.SetActive(false);
 		//
 		GameObject map = new GameObject ();
 		map.name = "map";
 		m_mapCtr = map.AddComponent<MapCtr> ();
-		m_mapCtr.ReadMap ("scene1");
+		m_mapCtr.ReadMap (GameData.CurLevel.levelFileName);
 		//
-		GameObject prefab = Resources.Load("Player")as GameObject;
-		GameObject player = GameObject.Instantiate (prefab);
-		m_playerCtr = player.GetComponent<PlayerCtr> ();
-		m_playerCtr.Init (2, 1, m_mapCtr);
-		//
-		GameObject dogPrefab = Resources.Load("Dog")as GameObject;
-		GameObject dog = GameObject.Instantiate (dogPrefab);
-		m_dogCtr = dog.GetComponent<DogCtr> ();
-		m_dogCtr.Init (14, 2, m_mapCtr, m_mapCtr.PathfindingMap, m_playerCtr);
-		AStarMapCell asmc = m_mapCtr.PathfindingMap.GetCell(2, 2);
-		asmc.PrintPassArray();
-		//
-		Camera.main.GetComponent<CameraFollow>().FollowTarget = player.transform;
+		Camera.main.GetComponent<CameraFollow>().FollowTarget = m_mapCtr.Player.transform;
 	}
 
 	public void Execute(GameStateBase owner)
 	{
-
+		
 	}
 
 	public void Exit(GameStateBase owner)
 	{
-
+		m_mapCtr.Clear();
+		if(null != m_uiCtr){
+			GameObject.Destroy(m_uiCtr.gameObject);
+			m_uiCtr =null;
+		}
+		if(null != m_failCtr){
+			GameObject.Destroy(m_failCtr.gameObject);
+			m_failCtr = null;
+		}
+		if(null != m_vectoryCtr){
+			GameObject.Destroy(m_vectoryCtr.gameObject);
+			m_vectoryCtr = null;
+		}
 	}
 
 	public void Message(string message, object[] parameters)
 	{
 		if(message.Equals("MapCellRevert")){
-			
+			CheckDead(parameters);
 		}else if(message.Equals("GetSocks")){
-			m_playerCtr.AddMoveSpeed(0.2f);
+			m_mapCtr.Player.AddMoveSpeed(0.2f);
+		}else if(message.Equals("BackBtnClick")){
+			DoBack();
+		}else if(message.Equals("GetUnderpant")){
+			DoGetUnderpant();
+		}else if(message.Equals("GetBra")){
+			DoGetBra();
+		}else if(message.Equals("Vectory")){
+			DoVectory();
+		}else if(message.Equals("PlayerDead")){
+			DoPlayerDead();
+		}else if(message.Equals("ShowLevelMenu")){
+			DoShowLevel();
+		}else if(message.Equals("RetryBtnClick")){
+			DoRetryLevel();
 		}
+
+	}
+	void DoShowLevel(){
+		//SceneLoading.LoadSceneName = GlobalDefine.HomeSceneName;
+		//UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(GlobalDefine.LoadSceneName);
+		GameStateManager.Instance().FSM.ChangeState(GameStateLevel.Instance());
+	}
+	void DoRetryLevel(){
+		GameStateManager.Instance().FSM.ChangeState(GameStateStart.Instance());
+	}
+	void CheckDead(object[] p){
+		int row = (int)p[0];
+		int col = (int)p[1];
+		if(m_mapCtr.Player.Row == row && m_mapCtr.Player.Column == col){
+			DoPlayerDead();
+		}
+		foreach(DogCtr dog in m_mapCtr.m_dogList){
+			if(dog.Row == row && dog.Column == col){
+				dog.Reset();
+			}
+		}
+	}
+
+	void DoPlayerDead(){
+		m_mapCtr.Player.CanControl = false;
+		foreach(DogCtr dog in m_mapCtr.m_dogList){
+			dog.CanControl = false;
+		}
+		AudioManager.Instance.PlayAudio("dead");
+		m_failCtr.gameObject.SetActive(true);
+	}
+	void DoVectory(){
+		m_mapCtr.Player.CanControl = false;
+		foreach(DogCtr dog in m_mapCtr.m_dogList){
+			dog.CanControl = false;
+		}
+		AudioManager.Instance.PlayAudio("vectory",false);
+		//
+		int starNum = 1;
+		if(braNum + underpantNum >= 40){
+			starNum= 3;
+		}else if(braNum + underpantNum >= 30){
+			starNum = 2;
+		}else{
+			starNum = 1;
+		}
+		m_vectoryCtr.gameObject.SetActive(true);
+		m_vectoryCtr.SetStarNum(starNum);
+		GameData.ClearLevel(GameData.CurLevel.id, starNum);
+	}
+	void DoGetBra(){
+		braNum++;
+		m_uiCtr.SetBraNum(braNum);
+		CheckShowDoor();
+	}
+	void DoGetUnderpant(){
+		underpantNum++;
+		m_uiCtr.SetUnderpantNum(underpantNum);
+		CheckShowDoor();
+	}
+	void CheckShowDoor(){
+		if(underpantNum + braNum == 1){
+			m_mapCtr.ShowExit(true);
+			AudioManager.Instance.PlayAudio("vectory", false);
+		}
+	}
+	void DoBack(){
+		SceneLoading.LoadSceneName = GlobalDefine.HomeSceneName;
+		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(GlobalDefine.LoadSceneName);
 	}
 }

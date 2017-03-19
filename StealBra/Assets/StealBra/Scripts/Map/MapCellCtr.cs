@@ -36,12 +36,13 @@ public class MapCellCtr : MonoBehaviour {
 	}
 	//
 	protected int m_preType;
-	public void ChangeToNone(bool canRevert = true){
+	public void ChangeToNone(bool canRevert){
 		if ((CELL_TYPE)CellData.cellType == CELL_TYPE.WALL) {
 			
 			SpriteMap2AStarMap.ResetAStarMapCell (Owner.Map, CellData, ref Owner.PathfindingMap);
 		}
 		//
+		Debug.Log("set null:"+CellData.row+","+CellData.col+","+Render.sprite.name);
 		Render.sprite = null;
 		m_preType = CellData.cellType; 
 		CellData.cellType = (int)CELL_TYPE.NONE;
@@ -61,6 +62,9 @@ public class MapCellCtr : MonoBehaviour {
 			SpriteMap2AStarMap.ResetAStarMapCell (Owner.Map, CellData, ref Owner.PathfindingMap);
 		}
 		//
-		//GameStateManager.Instance ().FSM.CurrentState.Message ("", null);
+		object[] p = new object[2];
+		p[0] = (object)CellData.row;
+		p[1] = (object)CellData.col;
+		GameStateManager.Instance ().FSM.CurrentState.Message ("MapCellRevert", p);
 	}
 }
