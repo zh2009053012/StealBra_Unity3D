@@ -52,6 +52,12 @@ public class MapCtr : MonoBehaviour {
 		}
 		return null;
 	}
+	public MapCellCtr GetMapCell(Vector2 pos){
+		Vector2 offset = pos - new Vector2((float)m_map.startPosX, (float)m_map.startPosY);
+		int row = (int)( offset.y / (float)m_map.cellHeight + 0.5f );
+		int col = (int) (offset.x / (float)m_map.cellWidth + 0.5f);
+		return GetMapCell (row, col);
+	}
 	public Vector3 StartPos{
 		get{ 
 			return new Vector3 ((float)m_map.startPosX, (float)m_map.startPosY, (float)m_map.startPosZ);
@@ -144,12 +150,13 @@ public class MapCtr : MonoBehaviour {
 		GameObject player = GameObject.Instantiate (prefab);
 		m_player = player.GetComponent<PlayerCtr> ();
 		m_player.Init (row, col, this);
+		player.AddComponent<PlayerCtrEx>().Init(row, col, this);
 	}
 	void LoadDog(int row, int col){
 		GameObject dogPrefab = Resources.Load("Dog")as GameObject;
 		GameObject dog = GameObject.Instantiate (dogPrefab);
 		DogCtr m_dogCtr = dog.GetComponent<DogCtr> ();
-		m_dogCtr.Init (row, col, this, PathfindingMap, m_player);
+		m_dogCtr.Init (row, col, this, PathfindingMap, m_player, Random.Range(0, 2)==1);
 		m_dogList.Add(m_dogCtr);
 	}
 	public void ReadMap(string fileName){

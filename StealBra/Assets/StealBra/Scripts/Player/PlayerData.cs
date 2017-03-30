@@ -49,6 +49,7 @@ public class PlayerData : MonoBehaviour {
 	//
 	protected Vector3 m_targetPos;
 	protected bool m_isMoving = false;
+	protected bool m_isJumping = false;
 	protected Vector3 m_dir;
 	//
 	protected float vInput;
@@ -57,6 +58,7 @@ public class PlayerData : MonoBehaviour {
 	protected Animator m_ani;
 	protected bool m_isAttack = false;
 	protected bool m_isLookLeft = false;
+	private MapCellCtr jumpTarget;
 	public bool IsLookLeft{
 		get{ return m_isLookLeft;}
 	}
@@ -86,7 +88,25 @@ public class PlayerData : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (m_isMoving) {
+		if(m_isJumping && !m_isMoving){
+			float step = m_moveSpeed * Time.deltaTime;
+			Vector3 dir = jumpTarget.Position - transform.position;
+			transform.position += dir*step;
+			if(Vector3.Distance(transform.position, jumpTarget.Position) < step*1.5f){
+				transform.position = new Vector3(jumpTarget.Position.x, jumpTarget.Position.y, transform.position.z);
+				m_row = jumpTarget.CellData.row;
+				m_col = jumpTarget.CellData.col;
+				m_curCell = jumpTarget;
+				m_isJumping = false;
+				CheckGround();
+				State = PlayerState.STAND;
+				if(null != m_playerMoveOverEvent){
+					m_playerMoveOverEvent.Invoke(this);
+				}
+			}
+
+		}
+		else if (m_isMoving) {
 			float step = m_moveSpeed * Time.deltaTime;
 			transform.position += m_dir * step;
 			if (Vector2.Distance (new Vector2 (transform.position.x, transform.position.y), new Vector2 (m_targetPos.x, m_targetPos.y)) < step*1.5f) {
@@ -101,6 +121,7 @@ public class PlayerData : MonoBehaviour {
 					m_playerMoveOverEvent.Invoke(this);
 				}
 			}
+
 		}
 	}
 
@@ -222,6 +243,7 @@ public class PlayerData : MonoBehaviour {
 				State = PlayerState.CLIMB;
 				m_isLookLeft = false;
 				transform.localEulerAngles = new Vector3 (0, 0, 0);
+				m_body.transform.localEulerAngles = new Vector3 (0, 0, 0);
 			} else {
 				Debug.LogWarning ("warning: astarMap not match spriteMap:"+(m_row+1)+","+(m_col));
 			}
@@ -242,8 +264,10 @@ public class PlayerData : MonoBehaviour {
 					m_ani.SetBool ("run", false);
 					m_ani.SetBool ("climb", true);
 					State = PlayerState.CLIMB;
+					m_body.transform.localEulerAngles = new Vector3 (0, 0, 0);
 				}
 				transform.localEulerAngles = new Vector3 (0, 0, 0);
+
 			} else {
 				Debug.LogWarning ("warning: astarMap not match spriteMap:" + (m_row - 1) + "," + (m_col));
 			}
@@ -251,11 +275,36 @@ public class PlayerData : MonoBehaviour {
 			m_ani.SetBool ("climb", false);
 		}
 	}
+	//
+	protected MapCellCtr CheckJump(){
+		if(m_isMoving)
+			return null;
+		MapCellCtr upCell = m_mapCtr.GetMapCell (m_row + 1, m_col);
+		MapCellCtr targetCell =  m_mapCtr.GetMapCell (m_row, m_col+1);
+		if(m_isLookLeft){
+			targetCell =  m_mapCtr.GetMapCell (m_row, m_col-1);
+		}
+		if((CELL_TYPE)upCell.CellData.cellType != CELL_TYPE.WALL && (CELL_TYPE)upCell.CellData.cellType != CELL_TYPE.STONE && 
+			(CELL_TYPE)targetCell.CellData.cellType != CELL_TYPE.WALL && (CELL_TYPE)targetCell.CellData.cellType != CELL_TYPE.STONE){
+			return targetCell;
+		}
+		return null;
+	}
+	//
 
-	public void Move(float horizontalInput, float verticalInput){
+	public void Move(float horizontalInput, float verticalInput, bool jump=false){
 		
-		if (m_isMoving || m_isAttack)
+		if (m_isAttack)
 			return;
+		if(m_isMoving)
+			return;
+		if(jump){
+			jumpTarget = CheckJump();
+			if(jumpTarget != null){
+				m_isJumping = true;
+				return;
+			}
+		}
 		hInput = horizontalInput;
 		vInput = verticalInput;
 		if (Mathf.Abs (hInput) > 0.5f) {
