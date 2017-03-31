@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 [ExecuteInEditMode]
 public class MapDisplay : MonoBehaviour {
-	
+	#if UNITY_EDITOR
 	private MapCellDisplay[,] cells;
 	public int row=1;
 	public int column=1;
@@ -166,4 +168,5 @@ public class MapDisplay : MonoBehaviour {
 		AStarMapStream.Write (map, filePath);
 		Debug.Log ("AutoAStarMap success.");
 	}
+	#endif
 }

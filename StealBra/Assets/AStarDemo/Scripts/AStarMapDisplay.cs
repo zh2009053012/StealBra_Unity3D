@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 /// <summary>
 /// 1\ sprite drawcall optimize  over
@@ -9,7 +11,7 @@ using UnityEditor;
 
 [ExecuteInEditMode]
 public class AStarMapDisplay : MonoBehaviour {
-
+	#if UNITY_EDITOR
 	public int m_row;
 	public int m_column;
 	public AStarMapCellDisplay[,] m_cellArray;
@@ -175,4 +177,5 @@ public class AStarMapDisplay : MonoBehaviour {
 		FromMap (map);
 
 	}
+	#endif
 }

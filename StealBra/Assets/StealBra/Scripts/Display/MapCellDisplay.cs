@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(SpriteRenderer))]
 public class MapCellDisplay : MonoBehaviour {
+	#if UNITY_EDITOR
 	protected MapDisplay m_owner;
 	[SerializeField]
 	protected CELL_TYPE m_type;
@@ -37,6 +40,7 @@ public class MapCellDisplay : MonoBehaviour {
 	public void Init(MapDisplay owner, MapCellData data){
 		m_owner = owner;
 		m_data = data;
+		m_addition = (CELL_ADDITION)data.cellAdd;
 		m_type = (CELL_TYPE)data.cellType;
 		if (!string.IsNullOrEmpty (data.resName))
 			Render.sprite = Resources.Load ("Sprites/" + data.resName, typeof(Sprite))as Sprite;
@@ -47,4 +51,5 @@ public class MapCellDisplay : MonoBehaviour {
 		Render.sortingOrder = data.sortOrder;
 		Render.sortingLayerName = data.sortLayer;
 	}
+	#endif
 }

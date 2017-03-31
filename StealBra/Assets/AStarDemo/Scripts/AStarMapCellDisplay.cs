@@ -3,7 +3,7 @@ using System.Collections;
 
 [ExecuteInEditMode]
 public class AStarMapCellDisplay : MonoBehaviour {
-
+	#if UNITY_EDITOR
 	public AStarMapDisplay Owner;
 	public int Row, Column;
 
@@ -165,4 +165,5 @@ public class AStarMapCellDisplay : MonoBehaviour {
 		mask2 = new Vector4 (mask2.x, mask2.y, Bool2Float(IsToDown), mask2.w);
 		GetComponent<SpriteRenderer> ().sharedMaterial.SetVector ("_Mask2", mask2);
 	}
+	#endif
 }

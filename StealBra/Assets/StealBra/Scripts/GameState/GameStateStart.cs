@@ -127,7 +127,10 @@ public class GameStateStart : IStateBase {
 			dog.CanControl = false;
 		}
 		AudioManager.Instance.PlayAudio("dead");
-		m_failCtr.gameObject.SetActive(true);
+		DeadEffect deCtr = m_mapCtr.Player.gameObject.AddComponent<DeadEffect> ();
+		deCtr.Play (2, (GameObject x)=>{
+			m_failCtr.gameObject.SetActive(true);
+		});
 	}
 	void DoVectory(){
 		m_mapCtr.Player.CanControl = false;
@@ -137,9 +140,9 @@ public class GameStateStart : IStateBase {
 		AudioManager.Instance.PlayAudio("vectory",false);
 		//
 		int starNum = 1;
-		if(braNum + underpantNum >= 40){
+		if(braNum + underpantNum >= 35){
 			starNum= 3;
-		}else if(braNum + underpantNum >= 30){
+		}else if(braNum + underpantNum >= 25){
 			starNum = 2;
 		}else{
 			starNum = 1;
@@ -159,7 +162,7 @@ public class GameStateStart : IStateBase {
 		CheckShowDoor();
 	}
 	void CheckShowDoor(){
-		if(underpantNum + braNum == 1){
+		if(underpantNum + braNum == 15){
 			m_mapCtr.ShowExit(true);
 			AudioManager.Instance.PlayAudio("vectory", false);
 		}
