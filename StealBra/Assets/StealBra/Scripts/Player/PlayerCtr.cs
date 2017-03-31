@@ -16,6 +16,7 @@ public class PlayerCtr : MonoBehaviour {
 		get{return m_data.Column;}
 	}
 	private float vInput, hInput;
+	private bool isJump;
 	// Use this for initialization
 	public void Init(int row, int col, MapCtr map){
 		m_data = GetComponent<PlayerData> ();
@@ -102,6 +103,7 @@ public class PlayerCtr : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		return;
 		if(!CanControl)
 			return;
 		if (Input.GetKeyDown (KeyCode.I)) {
@@ -128,9 +130,13 @@ public class PlayerCtr : MonoBehaviour {
 		if (Input.GetKeyUp (KeyCode.D)) {
 			hInput = 0;
 		}
-
+		if(Input.GetKeyDown(KeyCode.Space)){
+			isJump = true;
+		}else{
+			isJump = false;
+		}
 //		hInput = Input.GetAxis("Horizontal");
 //		vInput = Input.GetAxis("Vertical");
-		m_data.Move (hInput, vInput);
+		m_data.Move (hInput, vInput, true);
 	}
 }
