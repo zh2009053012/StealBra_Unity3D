@@ -46,6 +46,19 @@ public class AudioManager : MonoBehaviour {
 			m_processList.Add(src);
 		}
 	}
+	public void PauseAudio(string name){
+		int index = -1;
+		for(int i=0; i<m_processList.Count; i++){
+			if(m_processList[i].clip.name.Equals(name)){
+				index = i;
+				break;
+			}
+		}
+		if(index >= 0){
+			AudioSource src = m_processList[index];
+			src.Pause();
+		}
+	}
 	bool TryGetProcessAudio(string name, out AudioSource src){
 		int index = -1;
 		for(int i=0; i<m_processList.Count; i++){
@@ -88,10 +101,16 @@ public class AudioManager : MonoBehaviour {
 		//player.priority = 0;
 		player.transform.position =Camera.main.transform.position;
 		player.rolloffMode = AudioRolloffMode.Linear;
-		Debug.Log(player.isActiveAndEnabled+","+player.isPlaying+","+player.isVirtual);
-		player.Play();
+
 		if(!loop){
+			player.Play();
 			StartCoroutine(OnPlayOver(clip.length, player));
+		}else{
+			if(player.isPlaying){
+				player.UnPause();
+			}else{
+				player.Play();
+			}
 		}
 	}
 	IEnumerator OnPlayOver(float second, AudioSource src){

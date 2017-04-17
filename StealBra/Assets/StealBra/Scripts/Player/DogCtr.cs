@@ -17,7 +17,7 @@ public class DogCtr : MonoBehaviour {
 	private PlayerData m_data;
 	private AStarMap m_astarMap;
 	private float vInput, hInput;
-	private PlayerCtr m_target;
+	private PlayerCtrEx m_target;
 	private int startRow, startCol;
 	public int Row{
 		get{return m_data.Row;}
@@ -25,7 +25,7 @@ public class DogCtr : MonoBehaviour {
 	public int Column{
 		get{return m_data.Column;}
 	}
-	public void Init(int row, int col, MapCtr map, AStarMap astarMap, PlayerCtr target, bool isLeft){
+	public void Init(int row, int col, MapCtr map, AStarMap astarMap, PlayerCtrEx target, bool isLeft){
 		startRow = row;
 		startCol = col;
 		m_data = GetComponent<PlayerData> ();
@@ -76,7 +76,7 @@ public class DogCtr : MonoBehaviour {
 		}
 	}
 	// Use this for initialization
-	public void Init(int row, int col, MapCtr map, AStarMap astarMap, PlayerCtr target){
+	public void Init(int row, int col, MapCtr map, AStarMap astarMap, PlayerCtrEx target){
 		startRow = row;
 		startCol = col;
 		m_data = GetComponent<PlayerData> ();

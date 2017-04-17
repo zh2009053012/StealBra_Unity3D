@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class MapCtr : MonoBehaviour {
-	protected PlayerCtr m_player;
-	public PlayerCtr Player{
+	protected PlayerCtrEx m_player;
+	public PlayerCtrEx Player{
 		get{return m_player;}
 	}
 	public List<DogCtr> m_dogList = new List<DogCtr>();
@@ -148,9 +148,8 @@ public class MapCtr : MonoBehaviour {
 	void LoadPlayer(int row, int col){
 		GameObject prefab = Resources.Load("Player")as GameObject;
 		GameObject player = GameObject.Instantiate (prefab);
-		m_player = player.GetComponent<PlayerCtr> ();
+		m_player = player.GetComponent<PlayerCtrEx> ();
 		m_player.Init (row, col, this);
-		player.AddComponent<PlayerCtrEx>().Init(row, col, this);
 	}
 	void LoadDog(int row, int col){
 		GameObject dogPrefab = Resources.Load("Dog")as GameObject;
