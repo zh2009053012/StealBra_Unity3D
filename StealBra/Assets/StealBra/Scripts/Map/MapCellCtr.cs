@@ -49,6 +49,10 @@ public class MapCellCtr : MonoBehaviour {
 		if(canRevert)
 			StartCoroutine (Revert (10));
 	}
+	public void ChangeToLadder(){
+		CellData.cellType = (int)CELL_TYPE.LADDER;
+		Render.sprite = Resources.Load ("Sprites/ladder", typeof(Sprite))as Sprite;
+	}
 
 	IEnumerator Revert(float second){
 		yield return new WaitForSeconds (second);

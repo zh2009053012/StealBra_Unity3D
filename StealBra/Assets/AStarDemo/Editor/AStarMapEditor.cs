@@ -50,6 +50,9 @@ public class AStarMapEditor : Editor {
 		if (GUILayout.Button (new GUIContent ("Save AStarMap"), GUILayout.Width (100))) {
 			m_mapDisplay.SaveMap ();
 		}
+		if (GUILayout.Button (new GUIContent ("Save AStarMap As"), GUILayout.Width (120))) {
+			m_mapDisplay.SaveMapAs ();
+		}
 		EditorGUILayout.EndHorizontal ();
 
 		EditorGUILayout.BeginHorizontal();

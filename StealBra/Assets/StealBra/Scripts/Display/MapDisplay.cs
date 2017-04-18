@@ -155,6 +155,18 @@ public class MapDisplay : MonoBehaviour {
 		MapStream.Write (ToMapData (), mapFilePath);
 		Debug.Log ("Save success.");
 	}
+	public void SaveMapAs(){
+		if (cells == null)
+			return;
+		
+		mapFilePath = EditorUtility.SaveFilePanel ("Save map file", Application.dataPath, "", "txt");
+
+		if (string.IsNullOrEmpty (mapFilePath)) {
+			return;
+		}
+		MapStream.Write (ToMapData (), mapFilePath);
+		Debug.Log ("Save success.");
+	}
 	public void AutoAStarMap(){
 		if (cells == null)
 			return;

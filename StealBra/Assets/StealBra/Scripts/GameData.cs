@@ -19,7 +19,10 @@ public class GameData {
 		if(levelID > 0 && levelID <= LevelDataList.Count){
 			LevelDataList[levelID-1].starNum = starNum;
 			if(levelID+1 <= LevelDataList.Count){
-				LevelDataList[levelID].isLock = false;
+				//now there is only 5 levels
+				if (levelID + 1 <= 5) {
+					LevelDataList [levelID].isLock = false;
+				}
 			}
 			WriteLevelData();
 		}

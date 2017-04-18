@@ -20,7 +20,13 @@ public class PlayerCtrEx : MonoBehaviour {
 	protected bool m_canControl=true;
 	public bool CanControl{
 		get{ return m_canControl;}
-		set{m_canControl = value;}
+		set{
+			m_canControl = value;
+			if (!m_canControl) {
+				AudioManager.Instance.StopAudio("climb");
+				AudioManager.Instance.StopAudio ("run");
+			}
+		}
 	}
 	[SerializeField]
 	protected float m_g=-9.8f;
@@ -60,6 +66,9 @@ public class PlayerCtrEx : MonoBehaviour {
 	}
 
 	void FixedUpdate(){
+		if (!CanControl) {
+			return;
+		}
 		//上格子
 		Vector2 upPos = new Vector2(transform.position.x, transform.position.y + (float)m_mapCtr.Map.cellHeight*0.5f);  
 		MapCellCtr upCell = m_mapCtr.GetMapCell(upPos);
@@ -232,7 +241,7 @@ public class PlayerCtrEx : MonoBehaviour {
 				m_body.transform.localEulerAngles = new Vector3 (0, -90, 0);
 			}
 		}
-		//检查当前格子
+		//检查当前格子是否有bra/underpant/sock物品
 		object[] p = new object[2];
 		p[0] = (object)Row;
 		p[1] = (object)Column;
@@ -249,7 +258,14 @@ public class PlayerCtrEx : MonoBehaviour {
 			GameStateManager.Instance().FSM.CurrentState.Message("GetSocks", p);
 			AudioManager.Instance.PlayAudio("get");
 		}
-
+		//是否是出口
+		if(m_mapCtr.CanExit && Row == m_mapCtr.ExitEndRow && Column == m_mapCtr.ExitEndCol){
+			GameStateManager.Instance().FSM.CurrentState.Message("Vectory", p);
+		}
+		//是否遇到狗狗
+		if(m_mapCtr.GetDog(Row, Column) != null){
+			GameStateManager.Instance().FSM.CurrentState.Message("PlayerDead", p);
+		}
 	}
 	// Update is called once per frame
 	void Update () {

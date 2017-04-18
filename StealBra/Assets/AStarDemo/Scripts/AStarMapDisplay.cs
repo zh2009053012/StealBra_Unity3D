@@ -157,6 +157,16 @@ public class AStarMapDisplay : MonoBehaviour {
 		AStarMapStream.Write (ToMap (), m_filePath);
 		Debug.Log ("Save success.");
 	}
+	public void SaveMapAs(){
+		if (m_cellArray == null)
+			return;
+		m_filePath = EditorUtility.SaveFilePanel ("Save map file", Application.dataPath, "", "txt");
+		if (string.IsNullOrEmpty (m_filePath)) {
+			return;
+		}
+		AStarMapStream.Write (ToMap (), m_filePath);
+		Debug.Log ("Save success.");
+	}
 	void MapCatch(){
 		AStarMapStream.Write (ToMap (), Application.dataPath+"/MapCatch");
 	}

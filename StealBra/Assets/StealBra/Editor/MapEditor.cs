@@ -65,6 +65,9 @@ public class MapEditor : Editor {
 		if (GUILayout.Button (new GUIContent ("Save Map"), GUILayout.Width (100))) {
 			m_mapDisplay.SaveMap();
 		}
+		if (GUILayout.Button (new GUIContent ("Save Map As"), GUILayout.Width (120))) {
+			m_mapDisplay.SaveMapAs ();
+		}
 		EditorGUILayout.EndHorizontal ();
 
 		EditorGUILayout.BeginHorizontal ();

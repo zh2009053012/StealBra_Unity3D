@@ -34,19 +34,19 @@ public class DogCtr : MonoBehaviour {
 		m_target = target;
 
 		m_data.RegisterMoveOverEvent(AutoMoveOver);
-		if(isLeft){
+		if(isLeft && m_astarMap.GetCell(m_data.Row, m_data.Column).IsToLeft){
 			m_data.Move(-1, 0);
 		}else{
 			m_data.Move(1, 0);
 		}
 	}
 	void Update(){
-		if(m_target != null && Time.frameCount%5 == 0){
-			if(Vector3.Distance(m_target.gameObject.transform.position, this.gameObject.transform.position) <= 
-				m_data.Map.CellSize.x){
-				SendGameOverMsg();
-			}
-		}
+//		if(m_target != null && Time.frameCount%5 == 0){
+//			if(Vector3.Distance(m_target.gameObject.transform.position, this.gameObject.transform.position) <= 
+//				m_data.Map.CellSize.x){
+//				SendGameOverMsg();
+//			}
+//		}
 	}
 	void SendGameOverMsg(){
 		object[] p = new object[2];
@@ -58,10 +58,10 @@ public class DogCtr : MonoBehaviour {
 		object[] p = new object[2];
 		p[0] = (object)pd.Row;
 		p[1] = (object)pd.Column;
-		if(pd.Row == m_target.Row && pd.Column == m_target.Column){
-			GameStateManager.Instance().FSM.CurrentState.Message("PlayerDead", p);
-			return;
-		}
+//		if(pd.Row == m_target.Row && pd.Column == m_target.Column){
+//			GameStateManager.Instance().FSM.CurrentState.Message("PlayerDead", p);
+//			return;
+//		}
 
 		if(m_data.IsLookLeft){
 			if(m_astarMap.GetCell(m_data.Row, m_data.Column).IsToLeft)
@@ -99,7 +99,7 @@ public class DogCtr : MonoBehaviour {
 		p[0] = (object)pd.Row;
 		p[1] = (object)pd.Column;
 		if(pd.Row == m_target.Row && pd.Column == m_target.Column){
-			GameStateManager.Instance().FSM.CurrentState.Message("PlayerDead", p);
+			//GameStateManager.Instance().FSM.CurrentState.Message("PlayerDead", p);
 		}else{
 			FindPath();
 		}

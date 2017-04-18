@@ -26,12 +26,16 @@ public class GameStateStart : IStateBase {
 	FailureUI m_failCtr;
 	VectoryUI m_vectoryCtr;
 	int underpantNum=0, braNum=0;
+	bool m_isVectory = false;
+	bool m_isFailed = false;
 
 	public void Enter(GameStateBase owner)
 	{
 		underpantNum = 0;
 		braNum = 0;
 		m_owner = (GameStart)owner;
+		m_isFailed = false;
+		m_isVectory = false;
 		//
 		GameObject prefab = Resources.Load("UI/FightCanvas")as GameObject;
 		GameObject go = GameObject.Instantiate(prefab);
@@ -122,6 +126,9 @@ public class GameStateStart : IStateBase {
 	}
 
 	void DoPlayerDead(){
+		if (m_isFailed || m_isVectory) {
+			return;
+		}
 		m_mapCtr.Player.CanControl = false;
 		foreach(DogCtr dog in m_mapCtr.m_dogList){
 			dog.CanControl = false;
@@ -133,6 +140,9 @@ public class GameStateStart : IStateBase {
 		});
 	}
 	void DoVectory(){
+		if (m_isFailed || m_isVectory) {
+			return;
+		}
 		m_mapCtr.Player.CanControl = false;
 		foreach(DogCtr dog in m_mapCtr.m_dogList){
 			dog.CanControl = false;
@@ -140,9 +150,9 @@ public class GameStateStart : IStateBase {
 		AudioManager.Instance.PlayAudio("vectory",false);
 		//
 		int starNum = 1;
-		if(braNum + underpantNum >= 35){
+		if(braNum + underpantNum >= m_mapCtr.BraUnderpantNum){
 			starNum= 3;
-		}else if(braNum + underpantNum >= 25){
+		}else if(braNum + underpantNum >= m_mapCtr.BraUnderpantNum*0.75f){
 			starNum = 2;
 		}else{
 			starNum = 1;
@@ -162,7 +172,8 @@ public class GameStateStart : IStateBase {
 		CheckShowDoor();
 	}
 	void CheckShowDoor(){
-		if(underpantNum + braNum == 15){
+		//(int)(m_mapCtr.BraUnderpantNum*0.5f)
+		if(!m_mapCtr.CanExit && underpantNum + braNum >= 1){
 			m_mapCtr.ShowExit(true);
 			AudioManager.Instance.PlayAudio("vectory", false);
 		}

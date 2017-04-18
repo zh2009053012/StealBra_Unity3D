@@ -26,6 +26,15 @@ public class MapCtr : MonoBehaviour {
 	public int ExitCol{
 		get{return exitCol;}
 	}
+	protected int exitEndRow, exitEndCol;
+	public int ExitEndRow{
+		get{ return exitEndRow;}
+		private set{exitEndRow = value;}
+	}
+	public int ExitEndCol{
+		get{ return exitEndCol;}
+		private set{ exitEndCol = value;}
+	}
 	protected bool canExit=false;
 	public bool CanExit{
 		get{return canExit;}
@@ -33,9 +42,14 @@ public class MapCtr : MonoBehaviour {
 	public void ShowExit(bool isShow){
 		canExit = isShow;
 		if(isShow){
-			cells[exitCol, exitRow].Render.sprite = Resources.Load ("Sprites/door", typeof(Sprite))as Sprite;
+			//cells[exitCol, exitRow].Render.sprite = Resources.Load ("Sprites/ladder", typeof(Sprite))as Sprite;
+			for (int i = exitRow; i < m_map.row; i++) {
+				cells [exitCol, i].ChangeToLadder ();
+			}
+			ExitEndRow = cells [exitCol, m_map.row-1].CellData.row;
+			ExitEndCol = cells [exitCol, m_map.row-1].CellData.col;
 		}else{
-			cells[exitCol, exitRow].Render.sprite = null;
+			//cells[exitCol, exitRow].Render.sprite = null;
 		}
 	}
 	//
@@ -74,6 +88,11 @@ public class MapCtr : MonoBehaviour {
 	public int Column{
 		get{return m_map.column;}
 	}
+	protected int m_braUnderpantNum;
+	public int BraUnderpantNum{
+		get{ return m_braUnderpantNum;}
+		private set{ m_braUnderpantNum = value;}
+	}
 
 	public void Clear(){
 		if(null != Player)
@@ -101,6 +120,7 @@ public class MapCtr : MonoBehaviour {
 		transform.position = new Vector3 ((float)md.startPosX, (float)md.startPosY, (float)md.startPosZ);
 
 		cells = new MapCellCtr[m_map.column, m_map.row];
+		BraUnderpantNum = 0;
 		//
 		foreach (MapCellData item in md.cells) {
 			GameObject go = new GameObject ();
@@ -110,6 +130,11 @@ public class MapCtr : MonoBehaviour {
 			go.name = item.col + "_" + item.row;
 			mcc.Init (this, item);
 			cells [item.col, item.row] = mcc;
+			//
+			if ((CELL_TYPE)mcc.CellData.cellType == CELL_TYPE.BRA ||
+			   (CELL_TYPE)mcc.CellData.cellType == CELL_TYPE.UNDERPANT) {
+				BraUnderpantNum += 1;
+			}
 		}
 		foreach(MapCellData item in md.cells){
 			switch((CELL_ADDITION)item.cellAdd){
