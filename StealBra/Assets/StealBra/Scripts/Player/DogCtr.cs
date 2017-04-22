@@ -55,6 +55,8 @@ public class DogCtr : MonoBehaviour {
 		GameStateManager.Instance().FSM.CurrentState.Message("PlayerDead", p);
 	}
 	public void AutoMoveOver(PlayerData pd){
+		if (!CanControl)
+			return;
 		object[] p = new object[2];
 		p[0] = (object)pd.Row;
 		p[1] = (object)pd.Column;
@@ -106,7 +108,7 @@ public class DogCtr : MonoBehaviour {
 	}
 	//
 	void FindPath(){
-		if(null == m_target)
+		if(null == m_target || !CanControl)
 			return;
 		AStarMapCell start = m_astarMap.GetCell( m_data.Row, m_data.Column);
 		AStarMapCell end = m_astarMap.GetCell( m_target.Row, m_target.Column);

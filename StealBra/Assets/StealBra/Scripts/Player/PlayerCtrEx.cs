@@ -50,6 +50,7 @@ public class PlayerCtrEx : MonoBehaviour {
 		m_curCell = m_mapCtr.GetMapCell (row, col);
 		transform.position = m_curCell.Position;
 		m_ani = GetComponentInChildren<Animator> ();
+		m_localPositionTemp = m_body.transform.localPosition;
 	}
 	private float m_vInput, m_hInput;
 	[SerializeField]
@@ -59,6 +60,8 @@ public class PlayerCtrEx : MonoBehaviour {
 	private bool m_isRun = false;
 	private bool m_isHitInput = false;
 	private bool m_isAttack = false;
+	private bool m_isPole = false;
+	private Vector3 m_localPositionTemp = Vector3.zero;
 
 	public void OnAttackOver(){
 		m_isAttack = false;
@@ -131,13 +134,18 @@ public class PlayerCtrEx : MonoBehaviour {
 			if(upCellType == CELL_TYPE.STONE || upCellType == CELL_TYPE.WALL){
 				m_verticalAccelerate = 0;
 			}
+			if (footCellType == CELL_TYPE.POLE) {
+				m_verticalAccelerate = m_g;
+				m_isGround = true;
+			}
 		}else if(m_verticalAccelerate < 0){
 			if(downCellType == CELL_TYPE.STONE || downCellType == CELL_TYPE.WALL || 
-				downCellType == CELL_TYPE.LADDER || downCellType == CELL_TYPE.POLE){
+				downCellType == CELL_TYPE.LADDER || curCellType == CELL_TYPE.POLE){
 				m_verticalAccelerate = 0;
 				m_isGround = true;
 			}else{
 				m_isGround = false;
+				m_body.transform.localEulerAngles = new Vector3 (0, m_body.transform.localEulerAngles.y, 0);
 			}
 			//
 			if(downCellType == CELL_TYPE.STONE || downCellType == CELL_TYPE.WALL){
@@ -189,12 +197,17 @@ public class PlayerCtrEx : MonoBehaviour {
 			m_isRun = false;
 		}
 		//是否播放climb动画
-		if(m_isGround &&  footCellType == CELL_TYPE.LADDER)
+		m_isPole = false;
+		if(m_isGround && (footCellType == CELL_TYPE.LADDER || curCellType == CELL_TYPE.POLE))
 		{
-			if(downCellType == CELL_TYPE.STONE || downCellType == CELL_TYPE.WALL)
+			if (downCellType == CELL_TYPE.STONE || downCellType == CELL_TYPE.WALL) {
 				m_isClimb = false;
-			else
+			} else {
 				m_isClimb = true;
+				if (curCellType == CELL_TYPE.POLE) {
+					m_isPole = true;
+				}
+			}
 		}
 //		else if(m_isGround && curCellType == CELL_TYPE.POLE && Mathf.Abs(m_dir.x) > 0){
 //			m_isClimb = true;
@@ -209,9 +222,28 @@ public class PlayerCtrEx : MonoBehaviour {
 				AudioManager.Instance.PlayAudio("climb", true);
 			else
 				AudioManager.Instance.StopAudio("climb");
-			m_body.transform.localEulerAngles = new Vector3 (0, 0, 0);
+			if (m_isPole) {
+				//朝左爬
+				if (velocity.x > 0.001f) {
+					m_body.transform.localEulerAngles = new Vector3 (-90, 90, 180);
+					m_body.transform.localPosition = new Vector3 (-0.5f, m_localPositionTemp.y * 0.5f, m_localPositionTemp.z);
+				} else if (velocity.x < -0.001f) {//朝右爬
+					m_body.transform.localEulerAngles = new Vector3 (-90, 90, 0);
+					m_body.transform.localPosition = new Vector3 (0.5f, m_localPositionTemp.y * 0.5f, m_localPositionTemp.z);
+				} else {
+					//未输入左右参数，且还未进行体位旋转
+					if (Mathf.Abs (m_body.transform.localPosition.x - 0.5f) > 0.01f) {
+						m_body.transform.localEulerAngles = new Vector3 (-90, 90, 180);
+						m_body.transform.localPosition = new Vector3 (-0.5f, m_localPositionTemp.y * 0.5f, m_localPositionTemp.z);
+					}
+				}
+			} else {
+				m_body.transform.localPosition = m_localPositionTemp;
+				m_body.transform.localEulerAngles = new Vector3 (0, 0, 0);
+			}
 		}else{
 			AudioManager.Instance.StopAudio("climb");
+			m_body.transform.localPosition = m_localPositionTemp;
 			//m_body.transform.localEulerAngles = new Vector3 (0, 90, 0);
 		}
 

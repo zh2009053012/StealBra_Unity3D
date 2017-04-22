@@ -105,7 +105,7 @@ public class MapCtr : MonoBehaviour {
 		//
 		for(int i=0; i<m_map.row; i++){
 			for(int j=0; j<m_map.column; j++){
-				GameObject.Destroy(cells[j, i]);
+				GameObject.Destroy(cells[j, i].gameObject);
 				cells[j, i]= null;
 			}
 		}
@@ -113,6 +113,7 @@ public class MapCtr : MonoBehaviour {
 			GameObject.Destroy(go);
 		}
 		m_decorationList.Clear();
+		GameObject.Destroy (this.gameObject);
 	}
 
 	void FromMapData(MapData md){
@@ -184,6 +185,10 @@ public class MapCtr : MonoBehaviour {
 		m_dogList.Add(m_dogCtr);
 	}
 	public void ReadMap(string fileName){
+		Debug.Log ("MapCtr::ReadMap");
+		Debug.Log (GameDebug.GetInvokeClassAndMethodName(1));
+		Debug.Log (GameDebug.GetInvokeClassAndMethodName(2));
+		Debug.Log (GameDebug.GetInvokeClassAndMethodName(3));
 		if (string.IsNullOrEmpty (fileName)) {
 			return ;
 		}

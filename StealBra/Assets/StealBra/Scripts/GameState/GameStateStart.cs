@@ -54,6 +54,7 @@ public class GameStateStart : IStateBase {
 		GameObject map = new GameObject ();
 		map.name = "map";
 		m_mapCtr = map.AddComponent<MapCtr> ();
+		Debug.Log ("read map");
 		m_mapCtr.ReadMap (GameData.CurLevel.levelFileName);
 		//
 		Camera.main.GetComponent<CameraFollow>().FollowTarget = m_mapCtr.Player.transform;
@@ -67,6 +68,7 @@ public class GameStateStart : IStateBase {
 	public void Exit(GameStateBase owner)
 	{
 		m_mapCtr.Clear();
+		Debug.Log ("clear map");
 		if(null != m_uiCtr){
 			GameObject.Destroy(m_uiCtr.gameObject);
 			m_uiCtr =null;
@@ -108,9 +110,11 @@ public class GameStateStart : IStateBase {
 		//SceneLoading.LoadSceneName = GlobalDefine.HomeSceneName;
 		//UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(GlobalDefine.LoadSceneName);
 		GameStateManager.Instance().FSM.ChangeState(GameStateLevel.Instance());
+		Debug.Log ("DoShowLevel");
 	}
 	void DoRetryLevel(){
 		GameStateManager.Instance().FSM.ChangeState(GameStateStart.Instance());
+		Debug.Log ("DoRetryLevel");
 	}
 	void CheckDead(object[] p){
 		int row = (int)p[0];

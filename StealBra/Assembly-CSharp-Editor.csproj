@@ -52,10 +52,12 @@
      <Compile Include="Assets\StealBra\PrefabInPrefab\Editor\PrefabInPrefabEditor.cs" />
      <Compile Include="Assets\StealBra\PrefabInPrefab\Editor\PrefabObserver.cs" />
      <None Include="Assets\level.txt" />
+     <None Include="Assets\scene5_astar.txt" />
      <None Include="Assets\scene1.txt" />
      <None Include="Assets\scene3_astar.txt" />
      <None Include="Assets\StealBra\Shaders\DeadEffect.shader" />
      <None Include="Assets\scene4.txt" />
+     <None Include="Assets\scene5.txt" />
      <None Include="Assets\scene1_astar.txt" />
      <None Include="Assets\scene2_astar.txt" />
      <None Include="Assets\scene4_astar.txt" />
