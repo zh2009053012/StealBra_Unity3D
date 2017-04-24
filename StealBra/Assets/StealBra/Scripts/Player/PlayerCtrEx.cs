@@ -216,6 +216,12 @@ public class PlayerCtrEx : MonoBehaviour {
 			m_isClimb = false;
 		}
 
+		if (m_isGround && dist == Vector2.zero && m_isClimb) {
+			m_ani.speed = 0;
+		} else {
+			m_ani.speed = 1;
+		}
+		m_ani.SetBool ("isGround", m_isGround);
 		m_ani.SetBool("climb", m_isClimb);
 		if(m_isClimb){
 			if(Mathf.Abs(m_dir.y) > 0)
@@ -295,7 +301,7 @@ public class PlayerCtrEx : MonoBehaviour {
 			GameStateManager.Instance().FSM.CurrentState.Message("Vectory", p);
 		}
 		//是否遇到狗狗
-		if(m_mapCtr.GetDog(Row, Column) != null){
+		if(m_mapCtr.IsMeetWithDog(transform.position)){
 			GameStateManager.Instance().FSM.CurrentState.Message("PlayerDead", p);
 		}
 	}

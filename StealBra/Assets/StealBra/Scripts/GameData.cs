@@ -10,6 +10,7 @@ public class LevelData{
 	public int starNum;
 	public string levelFileName;
 	public bool isLock;
+	public int countDown;
 }
 
 public class GameData {
@@ -26,6 +27,22 @@ public class GameData {
 			}
 			WriteLevelData();
 		}
+	}
+	public static void ResetLevelData(){
+		LevelDataList.Clear ();
+		for (int i = 0; i < 50; i++) {
+			LevelData level = new LevelData ();
+			level.countDown = 500 - 5 * i;
+			level.id = i + 1;
+			level.isLock = true;
+			if (i == 0) {
+				level.isLock = false;
+			}
+			level.starNum = 0;
+			level.levelFileName = "scene" + level.id;
+			LevelDataList.Add (level);
+		}
+		WriteLevelData ();
 	}
 
 	public static void ReadLevelData(){

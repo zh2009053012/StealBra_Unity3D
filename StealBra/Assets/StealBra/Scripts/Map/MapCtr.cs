@@ -16,6 +16,14 @@ public class MapCtr : MonoBehaviour {
 		}
 		return null;
 	}
+	public bool IsMeetWithDog(Vector3 playerPos){
+		for (int i = 0; i < m_dogList.Count; i++) {
+			if (Vector3.Distance (playerPos, m_dogList [i].transform.position) <= m_map.cellWidth * 0.75f) {
+				return true;
+			}
+		}
+		return false;
+	}
 	//
 	protected int exitRow, exitCol;
 	public int ExitRow{

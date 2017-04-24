@@ -26,6 +26,8 @@ public class GameStateStart : IStateBase {
 	FailureUI m_failCtr;
 	VectoryUI m_vectoryCtr;
 	int underpantNum=0, braNum=0;
+	int m_countDownTotal = 0;
+	float m_countDownCur = 0;
 	bool m_isVectory = false;
 	bool m_isFailed = false;
 
@@ -40,6 +42,9 @@ public class GameStateStart : IStateBase {
 		GameObject prefab = Resources.Load("UI/FightCanvas")as GameObject;
 		GameObject go = GameObject.Instantiate(prefab);
 		m_uiCtr= go.GetComponent<FightUI>();
+		m_countDownTotal = GameData.CurLevel.countDown;
+		m_countDownCur = m_countDownTotal;
+		m_uiCtr.SetCountDown ((int)m_countDownCur, m_countDownTotal);
 		//
 		GameObject failPrefab = Resources.Load("UI/FailureCanvas")as GameObject;
 		GameObject fail = GameObject.Instantiate(failPrefab);
@@ -62,7 +67,14 @@ public class GameStateStart : IStateBase {
 
 	public void Execute(GameStateBase owner)
 	{
-		
+		//
+		if (m_mapCtr.Player.CanControl) {
+			m_countDownCur -= Time.deltaTime;
+			m_uiCtr.SetCountDown ((int)m_countDownCur, m_countDownTotal);
+			if (m_countDownCur <= 0) {
+				Message ("PlayerDead", null);
+			}
+		}
 	}
 
 	public void Exit(GameStateBase owner)
@@ -177,7 +189,7 @@ public class GameStateStart : IStateBase {
 	}
 	void CheckShowDoor(){
 		//(int)(m_mapCtr.BraUnderpantNum*0.5f)
-		if(!m_mapCtr.CanExit && underpantNum + braNum >= 1){
+		if(!m_mapCtr.CanExit && underpantNum + braNum >= m_mapCtr.BraUnderpantNum*0.5f){
 			m_mapCtr.ShowExit(true);
 			AudioManager.Instance.PlayAudio("vectory", false);
 		}
