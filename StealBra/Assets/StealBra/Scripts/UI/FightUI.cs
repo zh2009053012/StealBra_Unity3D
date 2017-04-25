@@ -10,7 +10,13 @@ public class FightUI : MonoBehaviour {
 	protected Text m_countDownText;
 	[SerializeField]
 	protected Slider m_countDownSlider;
+	[SerializeField]
+	protected Animator m_aniCtr;
 
+	public void PlayCountDownEffect(){
+		if (!m_aniCtr.GetBool ("isPlay"))
+			m_aniCtr.SetBool ("isPlay", true);
+	}
 	public void SetUnderpantNum(int underpant){
 		m_underpantNumText.text = underpant.ToString();
 	}

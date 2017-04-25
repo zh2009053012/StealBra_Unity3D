@@ -18,6 +18,16 @@ public class DeadEffect : MonoBehaviour {
 		DeadTime = deadTime;
 		m_isPlaying = true;
 	}
+	public void Stop(){
+		m_isPlaying = false;
+		for(int i = 0; i<m_renders.Length; i++)
+		{
+			for(int j = 0; j < m_renders[i].materials.Length; j++)
+			{
+				m_renders[i].materials[j].SetFloat (ParamName, 0);
+			}
+		}
+	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -37,10 +47,10 @@ public class DeadEffect : MonoBehaviour {
 				}
 			}
 			if (t >= 1) {
+				m_isPlaying = false;
 				if (null != m_deadAniOverEvent) {
 					m_deadAniOverEvent.Invoke (gameObject);
-				}
-				m_isPlaying = false;
+				} 
 			}
 		}
 	}

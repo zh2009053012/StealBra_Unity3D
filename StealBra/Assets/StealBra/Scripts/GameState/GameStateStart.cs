@@ -63,6 +63,7 @@ public class GameStateStart : IStateBase {
 		m_mapCtr.ReadMap (GameData.CurLevel.levelFileName);
 		//
 		Camera.main.GetComponent<CameraFollow>().FollowTarget = m_mapCtr.Player.transform;
+		AudioManager.Instance.PlayAudio ("bg", true);
 	}
 
 	public void Execute(GameStateBase owner)
@@ -71,6 +72,9 @@ public class GameStateStart : IStateBase {
 		if (m_mapCtr.Player.CanControl) {
 			m_countDownCur -= Time.deltaTime;
 			m_uiCtr.SetCountDown ((int)m_countDownCur, m_countDownTotal);
+			if (m_countDownCur <= 30) {
+				m_uiCtr.PlayCountDownEffect ();
+			}
 			if (m_countDownCur <= 0) {
 				Message ("PlayerDead", null);
 			}
@@ -79,6 +83,7 @@ public class GameStateStart : IStateBase {
 
 	public void Exit(GameStateBase owner)
 	{
+		AudioManager.Instance.StopAudio ("bg");
 		m_mapCtr.Clear();
 		Debug.Log ("clear map");
 		if(null != m_uiCtr){
@@ -136,7 +141,7 @@ public class GameStateStart : IStateBase {
 		}
 		foreach(DogCtr dog in m_mapCtr.m_dogList){
 			if(dog.Row == row && dog.Column == col){
-				dog.Reset();
+				dog.DoDead ();
 			}
 		}
 	}

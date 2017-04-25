@@ -255,14 +255,14 @@ public class PlayerCtrEx : MonoBehaviour {
 
 		m_ani.SetBool("run", m_isRun);
 		if(m_isRun){
-			AudioManager.Instance.PlayAudio("run", true);
+			//AudioManager.Instance.PlayAudio("run", true);
 			if(velocity.x > 0){
 				m_body.transform.localEulerAngles = new Vector3 (0, 90, 0);
 			}else{
 				m_body.transform.localEulerAngles = new Vector3 (0, -90, 0);
 			}
 		}else{
-			AudioManager.Instance.StopAudio("run");
+			//AudioManager.Instance.StopAudio("run");
 		}
 		//是否播放jump动画
 		if(m_verticalAccelerate > 0 && !m_isGround && !m_ani.GetBool("jump")){

@@ -18,7 +18,7 @@ public class MapCtr : MonoBehaviour {
 	}
 	public bool IsMeetWithDog(Vector3 playerPos){
 		for (int i = 0; i < m_dogList.Count; i++) {
-			if (Vector3.Distance (playerPos, m_dogList [i].transform.position) <= m_map.cellWidth * 0.75f) {
+			if (m_dogList[i].CanControl && Vector3.Distance (playerPos, m_dogList [i].transform.position) <= m_map.cellWidth * 0.75f) {
 				return true;
 			}
 		}

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(PlayerData))]
 public class DogCtr : MonoBehaviour {
 	protected bool m_canControl=true;
+	//dead : false; not dead : true;
 	public bool CanControl{
 		get{return m_canControl;}
 		set{
@@ -19,6 +20,7 @@ public class DogCtr : MonoBehaviour {
 	private float vInput, hInput;
 	private PlayerCtrEx m_target;
 	private int startRow, startCol;
+	private bool m_isDead = false;
 	public int Row{
 		get{return m_data.Row;}
 	}
@@ -75,6 +77,32 @@ public class DogCtr : MonoBehaviour {
 				m_data.Move(1, 0);
 			else
 				m_data.Move(-1, 0);
+		}
+	}
+	public void DoDead(){
+		CanControl = false;
+		DeadEffect deCtr = gameObject.GetComponent<DeadEffect> ();
+		if (null == deCtr) {
+			deCtr = gameObject.AddComponent<DeadEffect> ();
+		}
+		deCtr.Play (2, OnDeadCallback);
+	}
+	void OnDeadCallback(GameObject go){
+		StartCoroutine (Resurrection(10));
+	}
+	IEnumerator Resurrection(float second){
+		yield return new WaitForSeconds (second);
+
+		DeadEffect deCtr = gameObject.GetComponent<DeadEffect> ();
+		if (null != deCtr) {
+			deCtr.Stop ();
+		}
+		Reset ();
+		CanControl = true;
+		if(m_astarMap.GetCell(m_data.Row, m_data.Column).IsToLeft){
+			m_data.Move(-1, 0);
+		}else{
+			m_data.Move(1, 0);
 		}
 	}
 	// Use this for initialization
