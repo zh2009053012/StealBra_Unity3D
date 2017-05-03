@@ -194,9 +194,14 @@ public class GameStateStart : IStateBase {
 	}
 	void CheckShowDoor(){
 		//(int)(m_mapCtr.BraUnderpantNum*0.5f)
-		if(!m_mapCtr.CanExit && underpantNum + braNum >= m_mapCtr.BraUnderpantNum*0.5f){
-			m_mapCtr.ShowExit(true);
-			AudioManager.Instance.PlayAudio("vectory", false);
+		if(!m_mapCtr.CanExit){
+			if (GameData.CurLevel.id == 4 && underpantNum + braNum >= m_mapCtr.BraUnderpantNum * 0.4f) {
+				m_mapCtr.ShowExit(true);
+				AudioManager.Instance.PlayAudio("vectory", false);
+			} else if (GameData.CurLevel.id != 4 && underpantNum + braNum >= m_mapCtr.BraUnderpantNum * 0.5f) {
+				m_mapCtr.ShowExit(true);
+				AudioManager.Instance.PlayAudio("vectory", false);
+			}
 		}
 	}
 	void DoBack(){
