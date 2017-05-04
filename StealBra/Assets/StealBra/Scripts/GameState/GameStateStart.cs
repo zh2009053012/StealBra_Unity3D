@@ -62,7 +62,14 @@ public class GameStateStart : IStateBase {
 		Debug.Log ("read map");
 		m_mapCtr.ReadMap (GameData.CurLevel.levelFileName);
 		//
-		Camera.main.GetComponent<CameraFollow>().FollowTarget = m_mapCtr.Player.transform;
+		CameraFollow cameraCtr = Camera.main.GetComponent<CameraFollow>();
+		cameraCtr.FollowTarget = m_mapCtr.Player.transform;
+		float mapTopRightX = (m_mapCtr.Map.column - 0.5f) * (float)m_mapCtr.Map.cellWidth;
+		float mapTopRightY = (m_mapCtr.Map.row - 0.5f) * (float)m_mapCtr.Map.cellHeight;
+		cameraCtr.MaxPos = new Vector2 (mapTopRightX, mapTopRightY);
+		cameraCtr.MaxPos -= Camera.main.orthographicSize * new Vector2(Camera.main.aspect, 1);
+		Debug.Log ("camera max:"+cameraCtr.MaxPos+","+Camera.main.aspect);
+		//Camera.main.GetComponent<CameraFollow>().FollowTarget = m_mapCtr.Player.transform;
 		AudioManager.Instance.PlayAudio ("bg", true);
 	}
 
@@ -205,6 +212,8 @@ public class GameStateStart : IStateBase {
 		}
 	}
 	void DoBack(){
+		AudioManager.Instance.StopAudio ("bg");
+
 		SceneLoading.LoadSceneName = GlobalDefine.HomeSceneName;
 		UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(GlobalDefine.LoadSceneName);
 	}

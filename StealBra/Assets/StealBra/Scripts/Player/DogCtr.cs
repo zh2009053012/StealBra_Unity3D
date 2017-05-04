@@ -36,10 +36,16 @@ public class DogCtr : MonoBehaviour {
 		m_target = target;
 
 		m_data.RegisterMoveOverEvent(AutoMoveOver);
-		if(isLeft && m_astarMap.GetCell(m_data.Row, m_data.Column).IsToLeft){
-			m_data.Move(-1, 0);
+		if(isLeft){
+			if(m_astarMap.GetCell(m_data.Row, m_data.Column).IsToLeft)
+				m_data.Move(-1, 0);
+			else
+				m_data.Move(1, 0);
 		}else{
-			m_data.Move(1, 0);
+			if(m_astarMap.GetCell(m_data.Row, m_data.Column).IsToRight)
+				m_data.Move(1, 0);
+			else
+				m_data.Move(-1, 0);
 		}
 	}
 	void Update(){
